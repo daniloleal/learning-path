@@ -3,10 +3,8 @@ import { ModuleSelectComponent } from './components/module-select/module-select.
 import { QuizComponent } from './components/quiz/quiz.component';
 import { ResultComponent } from './components/result/result.component';
 
-
 export const routes: Routes = [
-    { path: '', component: ModuleSelectComponent },
-    { path: 'quiz/:moduleId', component: QuizComponent },
-    { path: 'result', component: ResultComponent }
-  ];
-  
+  { path: '', component: ModuleSelectComponent },
+  { path: 'quiz/:moduleId', component: QuizComponent },
+  { path: 'result', component: ResultComponent },
+];
