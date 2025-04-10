@@ -1,0 +1,19 @@
+[
+  {
+    "question": "What is Angular primarily used for?",
+    "options": [
+      "Backend development",
+      "Building single-page web applications",
+      "Game development",
+      "Database management"
+    ],
+    "answer": 1,
+    "explanation": "Angular is mainly used to build single-page applications (SPAs)."
+  },
+  {
+    "question": "Which language is primarily used to write Angular applications?",
+    "options": ["Java", "JavaScript", "TypeScript", "Dart"],
+    "answer": 2,
+    "explanation": "Angular is built with TypeScript, which is a superset of JavaScript."
+  }
+]
