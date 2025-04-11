@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { QuizService } from '../../services/quiz.service';
 
 @Component({
   selector: 'app-module-select',
@@ -134,35 +135,21 @@ import { CommonModule } from '@angular/common';
 })
 export class ModuleSelectComponent implements OnInit {
   moduleIds = Array.from({ length: 20 }, (_, i) => i + 1);
-  allAttempts: Record<string, any[]> = {};
   showResetConfirm = false;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private quizService: QuizService) {}
 
-  ngOnInit() {
-    this.loadAttempts();
-  }
-
-  loadAttempts() {
-    this.allAttempts = JSON.parse(localStorage.getItem('attempts') || '{}');
-  }
-
-  startModule(id: number) {
-    if (this.isLevelUnlocked(id)) {
-      this.router.navigate(['/quiz', id]);
-    }
-  }
+  ngOnInit() {}
 
   getBestScore(moduleId: number): number {
-    const moduleKey = `module-${moduleId}`;
-    const scores = this.allAttempts[moduleKey] || [];
-    const best = scores.length ? Math.max(...scores.map((s: any) => s.score / s.total * 100)) : 0;
+    const attempts = this.quizService.getAttempts(moduleId);
+    if (!attempts.length) return 0;
+    const best = Math.max(...attempts.map(a => (a.score / a.total) * 100));
     return Math.round(best);
   }
 
   getAttemptCount(moduleId: number): number {
-    const moduleKey = `module-${moduleId}`;
-    return (this.allAttempts[moduleKey] || []).length;
+    return this.quizService.getAttempts(moduleId).length;
   }
 
   isLevelUnlocked(id: number): boolean {
@@ -175,13 +162,18 @@ export class ModuleSelectComponent implements OnInit {
     return this.moduleIds.filter(id => this.getBestScore(id) >= 90).length;
   }
 
+  startModule(id: number) {
+    if (this.isLevelUnlocked(id)) {
+      this.router.navigate(['/quiz', id]);
+    }
+  }
+
   confirmReset() {
     this.showResetConfirm = true;
   }
 
   resetProgress() {
-    localStorage.removeItem('attempts');
+    this.quizService.resetProgress();
     this.showResetConfirm = false;
-    this.loadAttempts();
   }
 }

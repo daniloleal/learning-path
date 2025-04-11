@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { QuizService } from '../../services/quiz.service';
 
 interface Attempt {
   score: number;
@@ -165,8 +166,7 @@ export class ResultComponent implements OnInit {
   allAttempts: Record<string, Attempt[]> = {};
   moduleAttempts: Attempt[] = [];
 
-  constructor(private router: Router) {
-    // Get quiz results from router state
+  constructor(private router: Router, private quizService: QuizService) {
     this.score = history.state.score || 0;
     this.total = history.state.total || 0;
     this.module = history.state.module || 1;
@@ -174,14 +174,34 @@ export class ResultComponent implements OnInit {
   }
 
   ngOnInit() {
-    // Load all attempts from localStorage
-    this.allAttempts = JSON.parse(localStorage.getItem('attempts') || '{}');
+    this.moduleAttempts = this.quizService.getAttempts(this.module)
+      .map(a => ({
+        score: a.score,
+        total: a.total,
+        duration: a.duration
+      }))
+      .reverse();
     
-    // Get attempts for current module
-    this.moduleAttempts = this.allAttempts[`module-${this.module}`] || [];
+    this.allAttempts = this.groupAttemptsByModule();
+  }
+
+  private groupAttemptsByModule(): Record<string, Attempt[]> {
+    const attempts = this.quizService.getAttempts();
+    const grouped: Record<string, Attempt[]> = {};
     
-    // Sort by most recent first
-    this.moduleAttempts.reverse();
+    attempts.forEach(attempt => {
+      const key = `module-${attempt.moduleId}`;
+      if (!grouped[key]) {
+        grouped[key] = [];
+      }
+      grouped[key].push({
+        score: attempt.score,
+        total: attempt.total,
+        duration: attempt.duration
+      });
+    });
+    
+    return grouped;
   }
 
   get previousScoreKeys(): string[] {

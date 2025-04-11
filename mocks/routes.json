@@ -1,0 +1,4 @@
+{
+  "/v1/questions/:id": "/questions/:id",
+  "/v1/attempts": "/attempts"
+}
