@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { Location } from '@angular/common';
+import { QuizService } from '../../services/quiz.service';
 
 interface Question {
   question: string;
@@ -140,13 +141,12 @@ export class QuizComponent implements OnInit, OnDestroy {
   questions: Question[] = [];
   currentIndex = 0;
   selectedIndex: number | null = null;
+  selectedAnswers: number[] = [];
   showAnswer = false;
   correctCount = 0;
   timeLeft = 30;
   timer: any;
   showConfirmDialog = false;
-
-  // Time tracking
   quizStartTime!: number;
   quizEndTime!: number;
   totalQuizTime = 0;
@@ -154,16 +154,17 @@ export class QuizComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute, 
     private router: Router, 
-    private http: HttpClient,
+    private quizService: QuizService,
     private location: Location
   ) {}
 
   ngOnInit() {
     this.moduleId = +this.route.snapshot.paramMap.get('moduleId')!;
-    this.quizStartTime = Date.now(); // Record start time when quiz loads
+    this.quizStartTime = Date.now();
     
-    this.http.get<Question[]>(`/assets/module-${this.moduleId}.json`).subscribe(data => {
+    this.quizService.getQuestions(this.moduleId).subscribe(data => {
       this.questions = data;
+      this.selectedAnswers = new Array(data.length).fill(-1);
       this.startTimer();
     });
   }
@@ -179,6 +180,7 @@ export class QuizComponent implements OnInit, OnDestroy {
   selectAnswer(index: number) {
     if (this.showAnswer) return;
     this.selectedIndex = index;
+    this.selectedAnswers[this.currentIndex] = index;
     this.showAnswer = true;
     this.clearQuizTimer();
     
@@ -189,17 +191,9 @@ export class QuizComponent implements OnInit, OnDestroy {
 
   nextQuestion() {
     if (this.isLastQuestion) {
-      this.quizEndTime = Date.now(); // Record end time when quiz finishes
-      this.totalQuizTime = Math.floor((this.quizEndTime - this.quizStartTime) / 1000); // Calculate total time in seconds
+      this.quizEndTime = Date.now();
+      this.totalQuizTime = Math.floor((this.quizEndTime - this.quizStartTime) / 1000);
       this.saveScore();
-      this.router.navigate(['/result'], {
-        state: {
-          score: this.correctCount,
-          total: this.questions.length,
-          module: this.moduleId,
-          duration: this.totalQuizTime // Pass duration to results
-        }
-      });
     } else {
       this.currentIndex++;
       this.selectedIndex = null;
@@ -211,8 +205,8 @@ export class QuizComponent implements OnInit, OnDestroy {
   prevQuestion() {
     if (this.currentIndex > 0) {
       this.currentIndex--;
-      this.selectedIndex = null;
-      this.showAnswer = true; // Keep explanation visible for reviewed questions
+      this.selectedIndex = this.selectedAnswers[this.currentIndex];
+      this.showAnswer = true;
     }
   }
 
@@ -227,7 +221,7 @@ export class QuizComponent implements OnInit, OnDestroy {
       this.timeLeft--;
       if (this.timeLeft === 0) {
         this.clearQuizTimer();
-        this.selectAnswer(-1); // Time's up, mark as incorrect
+        this.selectAnswer(-1);
       }
     }, 1000);
   }
@@ -239,7 +233,6 @@ export class QuizComponent implements OnInit, OnDestroy {
   }
 
   confirmGoBack() {
-    // Only show confirmation if quiz is in progress
     if (this.currentIndex > 0 || this.selectedIndex !== null) {
       this.showConfirmDialog = true;
     } else {
@@ -252,14 +245,29 @@ export class QuizComponent implements OnInit, OnDestroy {
   }
 
   saveScore() {
-    const attempts = JSON.parse(localStorage.getItem('attempts') || '{}');
-    const moduleAttempts = attempts[`module-${this.moduleId}`] || [];
-    moduleAttempts.push({ 
-      score: this.correctCount, 
+    const attempt = {
+      moduleId: this.moduleId,
+      score: this.correctCount,
       total: this.questions.length,
-      duration: this.totalQuizTime // Save duration to localStorage
+      duration: this.totalQuizTime,
+      timestamp: Date.now(),
+      answers: this.questions.map((q, i) => ({
+        question: q.question,
+        selectedOption: this.selectedAnswers[i],
+        correctOption: q.answer,
+        isCorrect: this.selectedAnswers[i] === q.answer
+      }))
+    };
+
+    this.quizService.submitAttempt(attempt).subscribe(() => {
+      this.router.navigate(['/result'], {
+        state: {
+          score: this.correctCount,
+          total: this.questions.length,
+          module: this.moduleId,
+          duration: this.totalQuizTime
+        }
+      });
     });
-    attempts[`module-${this.moduleId}`] = moduleAttempts;
-    localStorage.setItem('attempts', JSON.stringify(attempts));
   }
 }
