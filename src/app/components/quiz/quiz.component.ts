@@ -1,17 +1,15 @@
 // quiz.component.ts
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { Location } from '@angular/common';
 import { QuizService } from '../../services/quiz.service';
+import { Question } from '../../models/questions.interface';
+import { QuizAttempt } from '../../models/quiz-attempt.interface';
+import { finalize, catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { AnswerRecord } from '../../models/answer.interface';
 
-interface Question {
-  question: string;
-  options: string[];
-  answer: number;
-  explanation: string;
-}
 
 @Component({
   selector: 'app-quiz',
@@ -55,7 +53,7 @@ interface Question {
       </div>
 
       <!-- Quiz content -->
-      <div class="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+      <div *ngIf="!isLoading; else loadingTpl" class="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
         <p class="mb-6 text-lg font-medium">{{ currentQuestion?.question }}</p>
         
         <div class="grid gap-3">
@@ -117,10 +115,25 @@ interface Question {
         </div>
       </div>
 
-      <!-- Loading state -->
-      <div *ngIf="!questions.length" class="flex justify-center p-10">
-        <p>Loading questions...</p>
+      <!-- Error message -->
+      <div *ngIf="hasError" class="mt-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg">
+        <p class="font-medium">Error loading questions</p>
+        <p>There was a problem loading the quiz questions. Please try again or return to the levels page.</p>
+        <button 
+          class="mt-3 px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200" 
+          (click)="reloadQuestions()"
+        >
+          Retry
+        </button>
       </div>
+
+      <!-- Loading template -->
+      <ng-template #loadingTpl>
+        <div class="p-10 flex flex-col items-center justify-center bg-white rounded-xl border border-gray-200 shadow-sm">
+          <div class="w-10 h-10 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mb-4"></div>
+          <p>Loading questions for Level {{ moduleId }}...</p>
+        </div>
+      </ng-template>
     </div>
 
     <!-- Confirmation Dialog -->
@@ -132,6 +145,14 @@ interface Question {
           <button class="px-4 py-2 border border-gray-300 rounded-lg" (click)="showConfirmDialog = false">Cancel</button>
           <button class="px-4 py-2 bg-blue-600 text-white rounded-lg" (click)="goBack()">Leave Quiz</button>
         </div>
+      </div>
+    </div>
+
+    <!-- Saving Progress Dialog -->
+    <div *ngIf="isSaving" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-10">
+      <div class="bg-white rounded-xl p-6 w-full max-w-md flex flex-col items-center">
+        <div class="w-10 h-10 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mb-4"></div>
+        <p class="text-gray-800">Saving your quiz results...</p>
       </div>
     </div>
   `
@@ -150,6 +171,9 @@ export class QuizComponent implements OnInit, OnDestroy {
   quizStartTime!: number;
   quizEndTime!: number;
   totalQuizTime = 0;
+  isLoading = true;
+  hasError = false;
+  isSaving = false;
 
   constructor(
     private route: ActivatedRoute, 
@@ -161,24 +185,48 @@ export class QuizComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.moduleId = +this.route.snapshot.paramMap.get('moduleId')!;
     this.quizStartTime = Date.now();
+    this.loadQuestions();
+  }
+
+  loadQuestions() {
+    this.isLoading = true;
+    this.hasError = false;
     
-    this.quizService.getQuestions(this.moduleId).subscribe(data => {
-      this.questions = data;
-      this.selectedAnswers = new Array(data.length).fill(-1);
-      this.startTimer();
-    });
+    this.quizService.getQuestions(this.moduleId)
+      .pipe(
+        catchError(error => {
+          console.error('Failed to load questions:', error);
+          this.hasError = true;
+          return of([]);
+        }),
+        finalize(() => {
+          this.isLoading = false;
+        })
+      )
+      .subscribe(data => {
+        if (data.length > 0) {
+          this.questions = data;
+          this.selectedAnswers = new Array(data.length).fill(-1);
+          this.startTimer();
+        }
+      });
+  }
+
+  reloadQuestions() {
+    this.loadQuestions();
   }
 
   ngOnDestroy() {
     this.clearQuizTimer();
   }
 
-  get currentQuestion() {
+  get currentQuestion(): Question | undefined {
     return this.questions[this.currentIndex];
   }
 
   selectAnswer(index: number) {
-    if (this.showAnswer) return;
+    if (this.showAnswer || !this.currentQuestion) return;
+    
     this.selectedIndex = index;
     this.selectedAnswers[this.currentIndex] = index;
     this.showAnswer = true;
@@ -196,9 +244,12 @@ export class QuizComponent implements OnInit, OnDestroy {
       this.saveScore();
     } else {
       this.currentIndex++;
-      this.selectedIndex = null;
-      this.showAnswer = false;
-      this.startTimer();
+      this.selectedIndex = this.selectedAnswers[this.currentIndex];
+      this.showAnswer = this.selectedIndex !== null && this.selectedIndex !== -1;
+      
+      if (!this.showAnswer) {
+        this.startTimer();
+      }
     }
   }
 
@@ -229,6 +280,7 @@ export class QuizComponent implements OnInit, OnDestroy {
   clearQuizTimer() {
     if (this.timer) {
       clearInterval(this.timer);
+      this.timer = null;
     }
   }
 
@@ -245,29 +297,57 @@ export class QuizComponent implements OnInit, OnDestroy {
   }
 
   saveScore() {
-    const attempt = {
+    this.isSaving = true;
+    
+    // Create an array of answer records to match the expected structure
+    const answerRecords: AnswerRecord[] = this.questions.map((q, i) => ({
+      question: q.question,
+      selectedOption: this.selectedAnswers[i],
+      correctOption: q.answer,
+      isCorrect: this.selectedAnswers[i] === q.answer
+    }));
+    
+    // Create the attempt object according to the QuizAttempt interface requirements
+    // Note: The userId, id, and timestamp will be added by the service
+    const attempt: Omit<QuizAttempt, 'userId' | 'id' | 'timestamp'> = {
       moduleId: this.moduleId,
       score: this.correctCount,
       total: this.questions.length,
       duration: this.totalQuizTime,
-      timestamp: Date.now(),
-      answers: this.questions.map((q, i) => ({
-        question: q.question,
-        selectedOption: this.selectedAnswers[i],
-        correctOption: q.answer,
-        isCorrect: this.selectedAnswers[i] === q.answer
-      }))
+      answers: answerRecords
     };
 
-    this.quizService.submitAttempt(attempt).subscribe(() => {
-      this.router.navigate(['/result'], {
-        state: {
-          score: this.correctCount,
-          total: this.questions.length,
-          module: this.moduleId,
-          duration: this.totalQuizTime
+    this.quizService.submitAttempt(attempt)
+      .pipe(
+        finalize(() => {
+          this.isSaving = false;
+        })
+      )
+      .subscribe({
+        next: (savedAttempt) => {
+          // Navigate to results page with the attempt data
+          this.router.navigate(['/result'], {
+            state: {
+              score: this.correctCount,
+              total: this.questions.length,
+              module: this.moduleId,
+              duration: this.totalQuizTime
+            }
+          });
+        },
+        error: (error) => {
+          console.error('Error saving quiz attempt:', error);
+          // Still navigate to results even if there's an error, as the service
+          // fallback returns the attempt object even on API errors
+          this.router.navigate(['/result'], {
+            state: {
+              score: this.correctCount,
+              total: this.questions.length,
+              module: this.moduleId,
+              duration: this.totalQuizTime
+            }
+          });
         }
       });
-    });
   }
 }

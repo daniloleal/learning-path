@@ -9,7 +9,8 @@
         "Database management"
       ],
       "answer": 1,
-      "explanation": "Angular is mainly used to build single-page applications (SPAs)."
+      "explanation": "Angular is mainly used to build single-page applications (SPAs).",
+      "id": "8a5c"
     },
     {
       "question": "Which language is primarily used to write Angular applications?",
@@ -20,7 +21,8 @@
         "Dart"
       ],
       "answer": 2,
-      "explanation": "Angular is built with TypeScript, which is a superset of JavaScript."
+      "explanation": "Angular is built with TypeScript, which is a superset of JavaScript.",
+      "id": "8161"
     }
   ],
   "attempts": [
@@ -67,6 +69,121 @@
           "isCorrect": true
         }
       ]
+    },
+    {
+      "id": "ltmzwvc",
+      "moduleId": 1,
+      "score": 2,
+      "total": 2,
+      "duration": 3,
+      "answers": [
+        {
+          "question": "What is Angular primarily used for?",
+          "selectedOption": 1,
+          "correctOption": 1,
+          "isCorrect": true
+        },
+        {
+          "question": "Which language is primarily used to write Angular applications?",
+          "selectedOption": 2,
+          "correctOption": 2,
+          "isCorrect": true
+        }
+      ],
+      "userId": 1,
+      "timestamp": 1744336495218
+    },
+    {
+      "id": "9u9q0r4",
+      "moduleId": 1,
+      "score": 1,
+      "total": 2,
+      "duration": 5,
+      "answers": [
+        {
+          "question": "What is Angular primarily used for?",
+          "selectedOption": 1,
+          "correctOption": 1,
+          "isCorrect": true
+        },
+        {
+          "question": "Which language is primarily used to write Angular applications?",
+          "selectedOption": 3,
+          "correctOption": 2,
+          "isCorrect": false
+        }
+      ],
+      "userId": 1,
+      "timestamp": 1744336759646
+    },
+    {
+      "id": "lj3foff",
+      "moduleId": 1,
+      "score": 2,
+      "total": 2,
+      "duration": 3,
+      "answers": [
+        {
+          "question": "What is Angular primarily used for?",
+          "selectedOption": 1,
+          "correctOption": 1,
+          "isCorrect": true
+        },
+        {
+          "question": "Which language is primarily used to write Angular applications?",
+          "selectedOption": 2,
+          "correctOption": 2,
+          "isCorrect": true
+        }
+      ],
+      "userId": 1,
+      "timestamp": 1744336820166
+    },
+    {
+      "id": "vyu801d",
+      "moduleId": 1,
+      "score": 1,
+      "total": 2,
+      "duration": 4,
+      "answers": [
+        {
+          "question": "What is Angular primarily used for?",
+          "selectedOption": 1,
+          "correctOption": 1,
+          "isCorrect": true
+        },
+        {
+          "question": "Which language is primarily used to write Angular applications?",
+          "selectedOption": 0,
+          "correctOption": 2,
+          "isCorrect": false
+        }
+      ],
+      "userId": 1,
+      "timestamp": 1744375375142
+    },
+    {
+      "id": "w39rf0c",
+      "moduleId": 1,
+      "score": 0,
+      "total": 2,
+      "duration": 3,
+      "answers": [
+        {
+          "question": "What is Angular primarily used for?",
+          "selectedOption": 0,
+          "correctOption": 1,
+          "isCorrect": false
+        },
+        {
+          "question": "Which language is primarily used to write Angular applications?",
+          "selectedOption": 0,
+          "correctOption": 2,
+          "isCorrect": false
+        }
+      ],
+      "userId": 1,
+      "timestamp": 1744375389984
     }
   ]
 }
