@@ -146,6 +146,11 @@ export class QuizComponent implements OnInit, OnDestroy {
   timer: any;
   showConfirmDialog = false;
 
+  // Time tracking
+  quizStartTime!: number;
+  quizEndTime!: number;
+  totalQuizTime = 0;
+
   constructor(
     private route: ActivatedRoute, 
     private router: Router, 
@@ -155,6 +160,8 @@ export class QuizComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.moduleId = +this.route.snapshot.paramMap.get('moduleId')!;
+    this.quizStartTime = Date.now(); // Record start time when quiz loads
+    
     this.http.get<Question[]>(`/assets/module-${this.moduleId}.json`).subscribe(data => {
       this.questions = data;
       this.startTimer();
@@ -182,12 +189,15 @@ export class QuizComponent implements OnInit, OnDestroy {
 
   nextQuestion() {
     if (this.isLastQuestion) {
+      this.quizEndTime = Date.now(); // Record end time when quiz finishes
+      this.totalQuizTime = Math.floor((this.quizEndTime - this.quizStartTime) / 1000); // Calculate total time in seconds
       this.saveScore();
       this.router.navigate(['/result'], {
         state: {
           score: this.correctCount,
           total: this.questions.length,
-          module: this.moduleId
+          module: this.moduleId,
+          duration: this.totalQuizTime // Pass duration to results
         }
       });
     } else {
@@ -244,7 +254,11 @@ export class QuizComponent implements OnInit, OnDestroy {
   saveScore() {
     const attempts = JSON.parse(localStorage.getItem('attempts') || '{}');
     const moduleAttempts = attempts[`module-${this.moduleId}`] || [];
-    moduleAttempts.push({ score: this.correctCount, total: this.questions.length });
+    moduleAttempts.push({ 
+      score: this.correctCount, 
+      total: this.questions.length,
+      duration: this.totalQuizTime // Save duration to localStorage
+    });
     attempts[`module-${this.moduleId}`] = moduleAttempts;
     localStorage.setItem('attempts', JSON.stringify(attempts));
   }
