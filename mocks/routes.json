@@ -1,4 +1,11 @@
 {
-  "/v1/questions/:id": "/questions/:id",
-  "/v1/attempts": "/attempts"
+  "/api/questions/:moduleId": "/questions?moduleId=:moduleId&userId=:userId",
+  "/api/user-questions/:userId/:moduleId": "/questions?userId=:userId&moduleId=:moduleId",
+  "/api/attempts": "/attempts",
+  "/api/attempts/:id": "/attempts/:id",
+  "/api/user-attempts/:userId": "/attempts?userId=:userId",
+  "/api/user-attempts/:userId/:moduleId": "/attempts?userId=:userId&moduleId=:moduleId",
+  "/api/topics": "/topics",
+  "/api/topics/:id": "/topics/:id",
+  "/api/user-topics/:userId": "/topics?userId=:userId"
 }

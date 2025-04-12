@@ -1,9 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { QuizService } from '../../services/quiz.service';
+import { NavigationService } from '../../services/navigation.service';
+import { ErrorHandlingService } from '../../services/error-handling.service';
 import { Attempt } from '../../models/attempt.interface';
 import { QuizAttempt } from '../../models/quiz-attempt.interface';
+import { Subscription } from 'rxjs';
+import { catchError, finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-result',
@@ -155,39 +159,78 @@ import { QuizAttempt } from '../../models/quiz-attempt.interface';
 </div>
   `
 })
-export class ResultComponent implements OnInit {
+export class ResultComponent implements OnInit, OnDestroy {
   score = 0;
   total = 0;
   module = 1;
   duration = 0;
   allAttempts: Record<string, Attempt[]> = {};
   moduleAttempts: QuizAttempt[] = [];
+  isLoading = false;
+  
+  private subscription = new Subscription();
 
-  constructor(private router: Router, private quizService: QuizService) {
-    this.score = history.state.score || 0;
-    this.total = history.state.total || 0;
-    this.module = history.state.module || 1;
-    this.duration = history.state.duration || 0;
+  constructor(
+    private router: Router, 
+    private quizService: QuizService,
+    private navigationService: NavigationService,
+    private errorHandling: ErrorHandlingService
+  ) {
+    // Get data from router state
+    const state = this.router.getCurrentNavigation()?.extras.state;
+    if (state) {
+      this.score = state['score'] || 0;
+      this.total = state['total'] || 0;
+      this.module = state['module'] || 1;
+      this.duration = state['duration'] || 0;
+    } else {
+      // Fallback if no state (e.g., if page is refreshed)
+      this.navigationService.goToTopics();
+    }
   }
 
-  ngOnInit() {
-    // Properly subscribe to the Observable returned by getAttempts
-    this.quizService.getAttempts(this.module).subscribe(attempts => {
-      this.moduleAttempts = attempts
-        .map(a => ({
-          score: a.score,
-          total: a.total,
-          duration: a.duration
-        } as QuizAttempt))
-        .reverse();
-    });
+  ngOnInit(): void {
+    this.isLoading = true;
+    
+    // Load module attempts
+    this.subscription.add(
+      this.quizService.getAttempts(this.module).pipe(
+        catchError(error => {
+          this.errorHandling.handleError(error, 'Failed to load module attempts');
+          return [];
+        })
+      ).subscribe(attempts => {
+        this.moduleAttempts = attempts
+          .map(a => ({
+            score: a.score,
+            total: a.total,
+            duration: a.duration
+          } as QuizAttempt))
+          .reverse();
+      })
+    );
     
     // Load all attempts and group them by module
-    this.quizService.getAttempts().subscribe(attempts => {
-      this.allAttempts = this.groupAttemptsByModule(attempts);
-    });
+    this.subscription.add(
+      this.quizService.getAttempts().pipe(
+        finalize(() => this.isLoading = false),
+        catchError(error => {
+          this.errorHandling.handleError(error, 'Failed to load attempts');
+          return [];
+        })
+      ).subscribe(attempts => {
+        this.allAttempts = this.groupAttemptsByModule(attempts);
+      })
+    );
+  }
+  
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
+  /**
+   * Group attempts by module ID
+   */
   private groupAttemptsByModule(attempts: QuizAttempt[]): Record<string, Attempt[]> {
     const grouped: Record<string, Attempt[]> = {};
     
@@ -207,7 +250,11 @@ export class ResultComponent implements OnInit {
   }
 
   get previousScoreKeys(): string[] {
-    return Object.keys(this.allAttempts).sort();
+    return Object.keys(this.allAttempts).sort((a, b) => {
+      const aNum = parseInt(a.replace('module-', ''));
+      const bNum = parseInt(b.replace('module-', ''));
+      return aNum - bNum;
+    });
   }
 
   get hasMultipleAttempts(): boolean {
@@ -280,11 +327,11 @@ export class ResultComponent implements OnInit {
     return 'Keep practicing!';
   }
 
-  goHome() {
-    this.router.navigate(['/']);
+  goHome(): void {
+    this.navigationService.goToTopics();
   }
 
-  retryQuiz() {
-    this.router.navigate(['/quiz', this.module]);
+  retryQuiz(): void {
+    this.navigationService.goToQuiz('', this.module);
   }
 }

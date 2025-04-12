@@ -174,6 +174,7 @@ export class QuizComponent implements OnInit, OnDestroy {
   isLoading = true;
   hasError = false;
   isSaving = false;
+  currentUserId = 1; // In a real app, this would come from an auth service
 
   constructor(
     private route: ActivatedRoute, 
@@ -195,7 +196,7 @@ export class QuizComponent implements OnInit, OnDestroy {
     this.quizService.getQuestions(this.moduleId)
       .pipe(
         catchError(error => {
-          console.error('Failed to load questions:', error);
+          console.error(`Failed to load questions for user ${this.currentUserId}, module ${this.moduleId}:`, error);
           this.hasError = true;
           return of([]);
         }),
@@ -205,9 +206,13 @@ export class QuizComponent implements OnInit, OnDestroy {
       )
       .subscribe(data => {
         if (data.length > 0) {
+          console.log(`Loaded ${data.length} questions for user ${this.currentUserId}, module ${this.moduleId}`);
           this.questions = data;
           this.selectedAnswers = new Array(data.length).fill(-1);
           this.startTimer();
+        } else {
+          console.warn(`No questions found for user ${this.currentUserId}, module ${this.moduleId}`);
+          this.hasError = true;
         }
       });
   }
@@ -308,7 +313,6 @@ export class QuizComponent implements OnInit, OnDestroy {
     }));
     
     // Create the attempt object according to the QuizAttempt interface requirements
-    // Note: The userId, id, and timestamp will be added by the service
     const attempt: Omit<QuizAttempt, 'userId' | 'id' | 'timestamp'> = {
       moduleId: this.moduleId,
       score: this.correctCount,
@@ -316,7 +320,7 @@ export class QuizComponent implements OnInit, OnDestroy {
       duration: this.totalQuizTime,
       answers: answerRecords
     };
-
+  
     this.quizService.submitAttempt(attempt)
       .pipe(
         finalize(() => {
@@ -331,20 +335,21 @@ export class QuizComponent implements OnInit, OnDestroy {
               score: this.correctCount,
               total: this.questions.length,
               module: this.moduleId,
-              duration: this.totalQuizTime
+              duration: this.totalQuizTime,
+              userId: this.currentUserId // Include userId in navigation state
             }
           });
         },
         error: (error) => {
           console.error('Error saving quiz attempt:', error);
-          // Still navigate to results even if there's an error, as the service
-          // fallback returns the attempt object even on API errors
+          // Still navigate to results even if there's an error
           this.router.navigate(['/result'], {
             state: {
               score: this.correctCount,
               total: this.questions.length,
               module: this.moduleId,
-              duration: this.totalQuizTime
+              duration: this.totalQuizTime,
+              userId: this.currentUserId // Include userId in navigation state
             }
           });
         }

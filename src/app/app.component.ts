@@ -68,13 +68,14 @@ export class AppComponent implements OnInit {
   private doc = inject(DOCUMENT);
 
   ngOnInit() {
-    // Set light mode as the default (don't check system preference)
+    // Check system preference first, then saved preference
     const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark') {
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    if (savedTheme === 'dark' || (savedTheme === null && prefersDark)) {
       this.isDarkMode = true;
       this.doc.documentElement.classList.add('dark');
     } else {
-      // Default to light mode
       this.isDarkMode = false;
       this.doc.documentElement.classList.remove('dark');
       localStorage.setItem('theme', 'light');
