@@ -7,68 +7,8 @@
       "createdAt": 1712937600000
     }
   ],
-  "topics": [
-    {
-      "userId": 1,
-      "name": "Angular",
-      "completedModules": 0,
-      "totalModules": 5,
-      "id": "angular-m9do057g",
-      "createdAt": 1744429028956
-    }
-  ],
-  "modules": [
-    {
-      "id": "angular-level-1-m9do058c",
-      "level": 1,
-      "topicId": "angular-m9do057g",
-      "title": "Angular - Level 1",
-      "isUnlocked": true,
-      "isCompleted": false,
-      "bestScore": 0,
-      "attemptCount": 0
-    },
-    {
-      "id": "angular-level-3-m9do058c",
-      "level": 3,
-      "topicId": "angular-m9do057g",
-      "title": "Angular - Level 3",
-      "isUnlocked": false,
-      "isCompleted": false,
-      "bestScore": 0,
-      "attemptCount": 0
-    },
-    {
-      "id": "angular-level-4-m9do058c",
-      "level": 4,
-      "topicId": "angular-m9do057g",
-      "title": "Angular - Level 4",
-      "isUnlocked": false,
-      "isCompleted": false,
-      "bestScore": 0,
-      "attemptCount": 0
-    },
-    {
-      "id": "angular-level-2-m9do058c",
-      "level": 2,
-      "topicId": "angular-m9do057g",
-      "title": "Angular - Level 2",
-      "isUnlocked": false,
-      "isCompleted": false,
-      "bestScore": 0,
-      "attemptCount": 0
-    },
-    {
-      "id": "angular-level-5-m9do058c",
-      "level": 5,
-      "topicId": "angular-m9do057g",
-      "title": "Angular - Level 5",
-      "isUnlocked": false,
-      "isCompleted": false,
-      "bestScore": 0,
-      "attemptCount": 0
-    }
-  ],
+  "topics": [],
+  "modules": [],
   "questions": [],
   "attempts": []
 }

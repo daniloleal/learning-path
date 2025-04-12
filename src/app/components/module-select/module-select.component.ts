@@ -17,6 +17,7 @@ export class ModuleSelectComponent implements OnInit {
   topicId!: string;
   showResetConfirm = false;
   currentTopic$!: Observable<Topic | null>;
+  topicModules$!: Observable<TopicModule[]>;
   currentUserId = 1; // In a real app, this would come from an authentication service
   
   constructor(
@@ -62,6 +63,9 @@ export class ModuleSelectComponent implements OnInit {
       }),
       shareReplay(1)
     );
+
+    // Add this to fetch modules separately
+    this.topicModules$ = this.topicService.getTopicModules$(this.topicId);
   }
 
   /**
