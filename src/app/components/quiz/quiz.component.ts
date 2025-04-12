@@ -6,10 +6,10 @@ import { Location } from '@angular/common';
 import { QuizService } from '../../services/quiz.service';
 import { Question } from '../../models/questions.interface';
 import { QuizAttempt } from '../../models/quiz-attempt.interface';
-import { finalize, catchError } from 'rxjs/operators';
+import { finalize, catchError, switchMap, map, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { AnswerRecord } from '../../models/answer.interface';
-
+import { TopicService } from '../../services/topic.service';
 
 @Component({
   selector: 'app-quiz',
@@ -26,7 +26,7 @@ import { AnswerRecord } from '../../models/answer.interface';
           <span>←</span> Back to Levels
         </button>
         <div class="bg-blue-100 text-blue-800 px-4 py-2 rounded-lg font-semibold">
-          Level {{ moduleId }}
+          Level {{ moduleLevel }}
         </div>
       </div>
 
@@ -131,7 +131,7 @@ import { AnswerRecord } from '../../models/answer.interface';
       <ng-template #loadingTpl>
         <div class="p-10 flex flex-col items-center justify-center bg-white rounded-xl border border-gray-200 shadow-sm">
           <div class="w-10 h-10 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mb-4"></div>
-          <p>Loading questions for Level {{ moduleId }}...</p>
+          <p>Loading questions for Level {{ moduleLevel }}...</p>
         </div>
       </ng-template>
     </div>
@@ -158,7 +158,9 @@ import { AnswerRecord } from '../../models/answer.interface';
   `
 })
 export class QuizComponent implements OnInit, OnDestroy {
-  moduleId!: number;
+  topicId!: string;
+  moduleId!: string; // Changed to string to match DB structure
+  moduleLevel!: number; // Added to track the module level for display
   questions: Question[] = [];
   currentIndex = 0;
   selectedIndex: number | null = null;
@@ -180,39 +182,57 @@ export class QuizComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute, 
     private router: Router, 
     private quizService: QuizService,
+    private topicService: TopicService,
     private location: Location
   ) {}
 
   ngOnInit() {
-    const moduleIdParam = this.route.snapshot.paramMap.get('moduleId');
-    
-    if (!moduleIdParam) {
-      console.error('Module ID is missing from route parameters');
-      this.router.navigate(['/']);
-      return;
-    }
-    
-    this.moduleId = +moduleIdParam;
-    
-    if (isNaN(this.moduleId)) {
-      console.error('Invalid module ID:', moduleIdParam);
-      this.router.navigate(['/']);
-      return;
-    }
-    
-    console.log('Loading questions for module ID:', this.moduleId);
-    this.quizStartTime = Date.now();
-    this.loadQuestions();
+    this.route.paramMap.subscribe(params => {
+      this.topicId = params.get('topicId') || '';
+      const moduleLevelParam = params.get('moduleId');
+      
+      if (!moduleLevelParam || !this.topicId) {
+        console.error('Missing required route parameters');
+        this.router.navigate(['/']);
+        return;
+      }
+      
+      // Convert the module level to a number for display
+      this.moduleLevel = +moduleLevelParam;
+      
+      if (isNaN(this.moduleLevel)) {
+        console.error('Invalid module level:', moduleLevelParam);
+        this.router.navigate(['/']);
+        return;
+      }
+      
+      // First, get the actual moduleId from the topicService using the moduleLevel
+      this.loadModuleAndQuestions();
+    });
   }
-
-  loadQuestions() {
+  
+  loadModuleAndQuestions() {
     this.isLoading = true;
     this.hasError = false;
     
-    this.quizService.getQuestions(this.moduleId)
+    // First, load the modules for this topic to find the actual moduleId
+    this.topicService.getTopicModules$(this.topicId)
       .pipe(
+        map(modules => {
+          // Find the module with the matching level
+          const module = modules.find(m => m.level === this.moduleLevel || +m.id === this.moduleLevel);
+          if (!module) {
+            throw new Error(`Module with level ${this.moduleLevel} not found for topic ${this.topicId}`);
+          }
+          return module.id; // Return the string moduleId
+        }),
+        tap(moduleId => {
+          this.moduleId = moduleId;
+          console.log(`Found moduleId ${moduleId} for level ${this.moduleLevel}`);
+        }),
+        switchMap(moduleId => this.quizService.getQuestions(moduleId)),
         catchError(error => {
-          console.error(`Failed to load questions for user ${this.currentUserId}, module ${this.moduleId}:`, error);
+          console.error('Error loading module or questions:', error);
           this.hasError = true;
           return of([]);
         }),
@@ -222,19 +242,20 @@ export class QuizComponent implements OnInit, OnDestroy {
       )
       .subscribe(data => {
         if (data.length > 0) {
-          console.log(`Loaded ${data.length} questions for user ${this.currentUserId}, module ${this.moduleId}`);
+          console.log(`Loaded ${data.length} questions for module ${this.moduleId}`);
           this.questions = data;
           this.selectedAnswers = new Array(data.length).fill(-1);
           this.startTimer();
+          this.quizStartTime = Date.now();
         } else {
-          console.warn(`No questions found for user ${this.currentUserId}, module ${this.moduleId}`);
+          console.warn(`No questions found for module ${this.moduleId}`);
           this.hasError = true;
         }
       });
   }
 
   reloadQuestions() {
-    this.loadQuestions();
+    this.loadModuleAndQuestions();
   }
 
   ngOnDestroy() {
@@ -314,7 +335,11 @@ export class QuizComponent implements OnInit, OnDestroy {
   }
 
   goBack() {
-    this.router.navigate(['/']);
+    if (this.topicId) {
+      this.router.navigate(['/modules', this.topicId]);
+    } else {
+      this.router.navigate(['/']);
+    }
   }
 
   saveScore() {
@@ -330,7 +355,7 @@ export class QuizComponent implements OnInit, OnDestroy {
     
     // Create the attempt object according to the QuizAttempt interface requirements
     const attempt: Omit<QuizAttempt, 'userId' | 'id' | 'timestamp'> = {
-      moduleId: this.moduleId,
+      moduleId: this.moduleId, // Use the string moduleId
       score: this.correctCount,
       total: this.questions.length,
       duration: this.totalQuizTime,
@@ -350,9 +375,9 @@ export class QuizComponent implements OnInit, OnDestroy {
             state: {
               score: this.correctCount,
               total: this.questions.length,
-              module: this.moduleId,
+              module: this.moduleLevel, // Use the module level for display purposes
               duration: this.totalQuizTime,
-              userId: this.currentUserId // Include userId in navigation state
+              userId: this.currentUserId
             }
           });
         },
@@ -363,9 +388,9 @@ export class QuizComponent implements OnInit, OnDestroy {
             state: {
               score: this.correctCount,
               total: this.questions.length,
-              module: this.moduleId,
+              module: this.moduleLevel, // Use the module level for display purposes
               duration: this.totalQuizTime,
-              userId: this.currentUserId // Include userId in navigation state
+              userId: this.currentUserId
             }
           });
         }

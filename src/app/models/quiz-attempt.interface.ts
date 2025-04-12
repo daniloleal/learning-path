@@ -1,7 +1,7 @@
 export interface QuizAttempt {
   id?: string;
   userId: number;
-  moduleId: number;
+  moduleId: string; // Changed from number to string to match DB structure
   score: number;
   total: number;
   duration: number;

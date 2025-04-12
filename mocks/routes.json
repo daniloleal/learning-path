@@ -5,21 +5,30 @@
   "/api/topics": "/topics",
   "/api/topics/:id": "/topics/:id",
   "/api/user-topics/:userId": "/topics?userId=:userId",
+  "/api/topics?userId=:userId": "/topics?userId=:userId", 
   
   "/api/modules": "/modules",
   "/api/modules/:id": "/modules/:id",
   "/api/topic-modules/:topicId": "/modules?topicId=:topicId",
+  "/api/modules?topicId=:topicId": "/modules?topicId=:topicId",
   
   "/api/questions": "/questions",
   "/api/questions/:id": "/questions/:id",
   "/api/module-questions/:moduleId": "/questions?moduleId=:moduleId",
+  "/api/questions?moduleId=:moduleId": "/questions?moduleId=:moduleId",
   "/api/topic-questions/:topicId": "/questions?topicId=:topicId",
+  "/api/questions?topicId=:topicId": "/questions?topicId=:topicId",
   "/api/topic-module-questions/:topicId/:moduleId": "/questions?topicId=:topicId&moduleId=:moduleId",
+  "/api/questions?topicId=:topicId&moduleId=:moduleId": "/questions?topicId=:topicId&moduleId=:moduleId",
   
   "/api/attempts": "/attempts",
   "/api/attempts/:id": "/attempts/:id",
   "/api/user-attempts/:userId": "/attempts?userId=:userId",
+  "/api/attempts?userId=:userId": "/attempts?userId=:userId",
   "/api/module-attempts/:moduleId": "/attempts?moduleId=:moduleId",
+  "/api/attempts?moduleId=:moduleId": "/attempts?moduleId=:moduleId",
   "/api/user-module-attempts/:userId/:moduleId": "/attempts?userId=:userId&moduleId=:moduleId",
-  "/api/topic-attempts/:topicId": "/attempts?topicId=:topicId"
+  "/api/attempts?userId=:userId&moduleId=:moduleId": "/attempts?userId=:userId&moduleId=:moduleId",
+  "/api/topic-attempts/:topicId": "/attempts?topicId=:topicId",
+  "/api/attempts?topicId=:topicId": "/attempts?topicId=:topicId"
 }

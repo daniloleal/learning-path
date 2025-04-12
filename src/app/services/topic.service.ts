@@ -23,7 +23,8 @@ export interface Topic {
  * Module data structure
  */
 export interface TopicModule {
-  id: number;
+  id: string;        // String ID format
+  level: number;     // Numeric level (1-5)
   topicId: string;
   title: string;
   isUnlocked: boolean;
@@ -57,7 +58,7 @@ export class TopicService {
    * Load topics for the current user
    */
   private loadUserTopics(): void {
-    this.http.get<Topic[]>(`${this.apiUrl}/user-topics/${this.currentUserId}`)
+    this.http.get<Topic[]>(`${this.apiUrl}/topics?userId=${this.currentUserId}`)
       .pipe(
         catchError(error => {
           this.errorHandling.handleError(error, 'Error loading topics', false);
@@ -77,7 +78,7 @@ export class TopicService {
    * Load modules for a specific topic
    */
   private loadTopicModules(topicId: string): void {
-    this.http.get<TopicModule[]>(`${this.apiUrl}/topic-modules/${topicId}`)
+    this.http.get<TopicModule[]>(`${this.apiUrl}/modules?topicId=${topicId}`)
       .pipe(
         catchError(error => {
           this.errorHandling.handleError(error, `Error loading modules for topic ${topicId}`, false);
@@ -85,7 +86,21 @@ export class TopicService {
         })
       )
       .subscribe(modules => {
-        this.modules[topicId] = modules;
+        // Ensure each module has a level property if not already present
+        const processedModules = modules.map(module => {
+          if (module.level === undefined) {
+            // Try to extract level from id or title if not explicitly set
+            const levelFromId = module.id.match(/-level-(\d+)-/);
+            const levelFromTitle = module.title.match(/Level (\d+)/);
+            const level = levelFromId ? parseInt(levelFromId[1], 10) :
+                         levelFromTitle ? parseInt(levelFromTitle[1], 10) : 1;
+            
+            return {...module, level};
+          }
+          return module;
+        });
+        
+        this.modules[topicId] = processedModules;
       });
   }
 
@@ -125,8 +140,23 @@ export class TopicService {
       return of(this.modules[topicId]);
     }
     
-    return this.http.get<TopicModule[]>(`${this.apiUrl}/topic-modules/${topicId}`)
+    return this.http.get<TopicModule[]>(`${this.apiUrl}/modules?topicId=${topicId}`)
       .pipe(
+        map(modules => {
+          // Ensure each module has a level property if not already present
+          return modules.map(module => {
+            if (module.level === undefined) {
+              // Try to extract level from id or title if not explicitly set
+              const levelFromId = module.id.match(/-level-(\d+)-/);
+              const levelFromTitle = module.title.match(/Level (\d+)/);
+              const level = levelFromId ? parseInt(levelFromId[1], 10) :
+                           levelFromTitle ? parseInt(levelFromTitle[1], 10) : 1;
+              
+              return {...module, level};
+            }
+            return module;
+          });
+        }),
         tap(modules => {
           this.modules[topicId] = modules;
         }),
@@ -202,7 +232,7 @@ export class TopicService {
     // Reset all modules
     const resetModules = topicModules.map((module, index) => ({
       ...module,
-      isUnlocked: index === 0,
+      isUnlocked: module.level === 1, // Only level 1 is unlocked
       isCompleted: false,
       bestScore: 0,
       attemptCount: 0

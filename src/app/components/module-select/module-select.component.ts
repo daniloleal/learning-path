@@ -69,19 +69,31 @@ export class ModuleSelectComponent implements OnInit {
 
   /**
    * Start a module quiz
+   * @param module The module to start, which can be the module object or just the level number
    */
-  startModule(moduleId: string | number) {
-    // Make sure we're sending a number ID
-    const numericId = typeof moduleId === 'string' ? parseInt(moduleId, 10) : moduleId;
+  startModule(module: TopicModule | string | number) {
+    let moduleLevel: number;
+    
+    if (typeof module === 'object') {
+      // If we have the full module object, use its level property
+      moduleLevel = module.level;
+    } else if (typeof module === 'string') {
+      // Try to extract the level from the moduleId string (e.g., "angular-level-1-abc123")
+      const levelMatch = module.match(/-level-(\d+)-/);
+      moduleLevel = levelMatch ? parseInt(levelMatch[1], 10) : 1;
+    } else {
+      // If it's already a number, use it directly
+      moduleLevel = module;
+    }
     
     // Guard against NaN
-    if (isNaN(numericId)) {
-      console.error('Invalid module ID:', moduleId);
+    if (isNaN(moduleLevel)) {
+      console.error('Invalid module level:', module);
       return;
     }
     
-    console.log('Navigating to quiz with module ID:', numericId);
-    this.router.navigate(['/quiz', this.topicId, numericId]);
+    console.log('Navigating to quiz with module level:', moduleLevel);
+    this.router.navigate(['/quiz', this.topicId, moduleLevel]);
   }
 
   /**

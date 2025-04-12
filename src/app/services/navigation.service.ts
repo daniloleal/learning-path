@@ -65,9 +65,11 @@ export class NavigationService {
   
   /**
    * Navigate to a specific quiz
+   * @param topicId The topic ID
+   * @param moduleLevel The module level (number) for display purposes
    */
-  goToQuiz(topicId: string, moduleId: number): void {
-    this.router.navigate(['/quiz', topicId, moduleId]);
+  goToQuiz(topicId: string, moduleLevel: number): void {
+    this.router.navigate(['/quiz', topicId, moduleLevel]);
   }
   
   /**
@@ -76,7 +78,7 @@ export class NavigationService {
   goToResults(resultData: {
     score: number,
     total: number,
-    module: number,
+    module: number,  // Module level for display
     duration: number
   }): void {
     const navigationExtras: NavigationExtras = {

@@ -11,9 +11,10 @@ import { ErrorHandlingService } from './error-handling.service';
  * Enhanced Question interface that includes module and topic references
  */
 export interface EnhancedQuestion extends Question {
-  moduleId: string;      // Reference to the module ID (string format)
-  level?: number;        // Module level (1-5)
-  topicId?: string;      // Reference to the topic
+  id?: string;        // Make id optional and explicit in the interface
+  moduleId: string;   // Reference to the module ID (string format)
+  level?: number;     // Module level (1-5)
+  topicId?: string;   // Reference to the topic
 }
 
 /**
@@ -49,7 +50,7 @@ export class QuestionService {
     // Construct URL based on whether we have a topic ID
     const url = topicId 
       ? `${this.apiUrl}/questions?moduleId=${moduleId}&topicId=${topicId}`
-      : `${this.apiUrl}/module-questions/${moduleId}`;
+      : `${this.apiUrl}/questions?moduleId=${moduleId}`;
     
     // Fetch from API
     const request$ = this.http.get<EnhancedQuestion[]>(url)
@@ -81,7 +82,7 @@ export class QuestionService {
     }
     
     // Get questions from the API
-    const url = `${this.apiUrl}/level-questions/${topicId}/${level}`;
+    const url = `${this.apiUrl}/questions?topicId=${topicId}&level=${level}`;
     
     const request$ = this.http.get<EnhancedQuestion[]>(url)
       .pipe(
@@ -107,7 +108,7 @@ export class QuestionService {
     // Create the batch save requests with delays between each question
     const saveRequests = questions.map((question, index) => {
       // Generate a unique ID for each question if not already present
-      const questionId = this.generateQuestionId(
+      const questionId = question.id ?? this.generateQuestionId(
         question.topicId || '',
         question.level || 0,
         index + 1

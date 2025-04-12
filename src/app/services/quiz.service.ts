@@ -21,10 +21,10 @@ export class QuizService {
 
   /**
    * Get questions for a specific module for the current user
-   * @param moduleId The module ID to fetch questions for
+   * @param moduleId The module ID to fetch questions for (can be string or number)
    * @returns Observable of Question array
    */
-  getQuestions(moduleId: number): Observable<Question[]> {
+  getQuestions(moduleId: string | number): Observable<Question[]> {
     // Generate cache key that includes user ID
     const cacheKey = `user-${this.currentUserId}-module-${moduleId}`;
     
@@ -34,18 +34,17 @@ export class QuizService {
     }
 
     // If not in cache, fetch from API with userId parameter
-    const request$ = this.http.get<any>(`${this.apiUrl}/user-questions/${this.currentUserId}/${moduleId}`).pipe(
+    const request$ = this.http.get<any>(`${this.apiUrl}/questions?moduleId=${moduleId}`).pipe(
       retry(1), // Retry failed request once
       tap(response => {
-        console.log(`Loaded questions for user ${this.currentUserId}, module ${moduleId}`);
+        console.log(`Loaded questions for module ${moduleId}`);
       }),
-      // Extract the questions array from the response
+      // Extract the questions array from the response or return the response itself if it's an array
       map(response => {
-        // If the response is an array of objects with a questions property, return the first one
-        if (Array.isArray(response) && response.length > 0 && response[0].questions) {
-          return response[0].questions;
+        if (Array.isArray(response)) {
+          return response;
         }
-        // If the response itself has a questions property
+        // If the response is an object with a questions property, return that
         else if (response && response.questions) {
           return response.questions;
         }
@@ -55,10 +54,11 @@ export class QuizService {
       catchError((error: HttpErrorResponse) => {
         console.error('Error loading questions:', error);
         // Fallback to local file if API fails
-        return this.http.get<Question[]>(`/assets/user-${this.currentUserId}-module-${moduleId}.json`).pipe(
+        return this.http.get<Question[]>(`/assets/module-${moduleId}.json`).pipe(
           catchError(() => {
             // If local file also fails, return empty array
-            return throwError(() => new Error('Failed to load questions from both API and fallback'));
+            console.error('Failed to load questions from both API and fallback');
+            return of([]);
           })
         );
       }),
@@ -97,15 +97,15 @@ export class QuizService {
    * @param moduleId Optional module ID to filter attempts
    * @returns Observable of quiz attempts
    */
-  getAttempts(moduleId?: number): Observable<QuizAttempt[]> {
+  getAttempts(moduleId?: number | string): Observable<QuizAttempt[]> {
     let url: string;
     
     if (moduleId) {
       // Use the new user-attempts endpoint that supports filtering by both userId and moduleId
-      url = `${this.apiUrl}/user-attempts/${this.currentUserId}/${moduleId}`;
+      url = `${this.apiUrl}/attempts?userId=${this.currentUserId}&moduleId=${moduleId}`;
     } else {
       // Get all attempts for the current user
-      url = `${this.apiUrl}/user-attempts/${this.currentUserId}`;
+      url = `${this.apiUrl}/attempts?userId=${this.currentUserId}`;
     }
     
     return this.http.get<QuizAttempt[]>(url).pipe(
@@ -122,7 +122,7 @@ export class QuizService {
    * @returns Observable of quiz attempts
    */
   getUserAttempts(userId: number): Observable<QuizAttempt[]> {
-    return this.http.get<QuizAttempt[]>(`${this.apiUrl}/user-attempts/${userId}`).pipe(
+    return this.http.get<QuizAttempt[]>(`${this.apiUrl}/attempts?userId=${userId}`).pipe(
       catchError(error => {
         console.error('Error loading user attempts:', error);
         return of([]);
@@ -135,9 +135,6 @@ export class QuizService {
    * @returns Observable indicating completion
    */
   resetProgress(): Observable<void> {
-    // This would need to be updated in a real API to support deleting by userId
-    // For now we'll stick with the original implementation but log a warning
-    console.warn('resetProgress should be updated to delete only current user attempts');
     return this.http.delete<void>(`${this.apiUrl}/attempts?userId=${this.currentUserId}`).pipe(
       catchError(error => {
         console.error('Error resetting progress:', error);
@@ -150,7 +147,7 @@ export class QuizService {
    * Clear the questions cache
    * @param moduleId Optional specific module to clear, otherwise clear all
    */
-  clearCache(moduleId?: number): void {
+  clearCache(moduleId?: number | string): void {
     if (moduleId !== undefined) {
       const cacheKey = `user-${this.currentUserId}-module-${moduleId}`;
       this.cacheQuestions.delete(cacheKey);
