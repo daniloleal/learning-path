@@ -184,7 +184,23 @@ export class QuizComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.moduleId = +this.route.snapshot.paramMap.get('moduleId')!;
+    const moduleIdParam = this.route.snapshot.paramMap.get('moduleId');
+    
+    if (!moduleIdParam) {
+      console.error('Module ID is missing from route parameters');
+      this.router.navigate(['/']);
+      return;
+    }
+    
+    this.moduleId = +moduleIdParam;
+    
+    if (isNaN(this.moduleId)) {
+      console.error('Invalid module ID:', moduleIdParam);
+      this.router.navigate(['/']);
+      return;
+    }
+    
+    console.log('Loading questions for module ID:', this.moduleId);
     this.quizStartTime = Date.now();
     this.loadQuestions();
   }

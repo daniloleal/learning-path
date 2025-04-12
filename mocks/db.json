@@ -7,8 +7,444 @@
       "createdAt": 1712937600000
     }
   ],
-  "topics": [],
-  "modules": [],
-  "questions": [],
+  "topics": [
+    {
+      "userId": 1,
+      "name": "Angular",
+      "completedModules": 0,
+      "totalModules": 5,
+      "id": "angular-m9eabl5q",
+      "createdAt": 1744466514398
+    }
+  ],
+  "modules": [
+    {
+      "id": "angular-level-1-m9eabl6t",
+      "level": 1,
+      "topicId": "angular-m9eabl5q",
+      "title": "Angular - Level 1",
+      "isUnlocked": true,
+      "isCompleted": false,
+      "bestScore": 0,
+      "attemptCount": 0
+    },
+    {
+      "id": "angular-level-2-m9eabl6t",
+      "level": 2,
+      "topicId": "angular-m9eabl5q",
+      "title": "Angular - Level 2",
+      "isUnlocked": false,
+      "isCompleted": false,
+      "bestScore": 0,
+      "attemptCount": 0
+    },
+    {
+      "id": "angular-level-3-m9eabl6t",
+      "level": 3,
+      "topicId": "angular-m9eabl5q",
+      "title": "Angular - Level 3",
+      "isUnlocked": false,
+      "isCompleted": false,
+      "bestScore": 0,
+      "attemptCount": 0
+    },
+    {
+      "id": "angular-level-4-m9eabl6t",
+      "level": 4,
+      "topicId": "angular-m9eabl5q",
+      "title": "Angular - Level 4",
+      "isUnlocked": false,
+      "isCompleted": false,
+      "bestScore": 0,
+      "attemptCount": 0
+    },
+    {
+      "id": "angular-level-5-m9eabl6t",
+      "level": 5,
+      "topicId": "angular-m9eabl5q",
+      "title": "Angular - Level 5",
+      "isUnlocked": false,
+      "isCompleted": false,
+      "bestScore": 0,
+      "attemptCount": 0
+    }
+  ],
+  "questions": [
+    {
+      "question": "[Level 1] What is an important concept in Angular related to services?",
+      "options": [
+        "The reactive principle",
+        "The fundamental methodology",
+        "The reactive framework",
+        "The core pattern"
+      ],
+      "answer": 0,
+      "explanation": "[Level 1] In Angular, the services is particularly important because it forms the foundation for understanding more complex concepts. The correct answer demonstrates proper knowledge of Angular fundamentals.",
+      "id": "q-angular-l1-1-m9eabm0f",
+      "moduleId": "angular-level-1-m9eabl6t",
+      "level": 1,
+      "topicId": "angular-m9eabl5q"
+    },
+    {
+      "question": "[Level 1] What is an important concept in Angular related to modules?",
+      "options": [
+        "The functional principle",
+        "The essential methodology",
+        "The essential framework",
+        "The modern pattern"
+      ],
+      "answer": 1,
+      "explanation": "[Level 1] In Angular, the modules is particularly important because it forms the foundation for understanding more complex concepts. The correct answer demonstrates proper knowledge of Angular fundamentals.",
+      "id": "q-angular-l1-2-m9eabm0f",
+      "moduleId": "angular-level-1-m9eabl6t",
+      "level": 1,
+      "topicId": "angular-m9eabl5q"
+    },
+    {
+      "question": "[Level 1] What is an important concept in Angular related to directives?",
+      "options": [
+        "The design principle",
+        "The core methodology",
+        "The basic framework",
+        "The core pattern"
+      ],
+      "answer": 2,
+      "explanation": "[Level 1] In Angular, the directives is particularly important because it forms the foundation for understanding more complex concepts. The correct answer demonstrates proper knowledge of Angular fundamentals.",
+      "id": "q-angular-l1-3-m9eabm0f",
+      "moduleId": "angular-level-1-m9eabl6t",
+      "level": 1,
+      "topicId": "angular-m9eabl5q"
+    },
+    {
+      "question": "[Level 1] What is an important concept in Angular related to pipes?",
+      "options": [
+        "The design principle",
+        "The structural methodology",
+        "The structural framework",
+        "The modern pattern"
+      ],
+      "answer": 3,
+      "explanation": "[Level 1] In Angular, the pipes is particularly important because it forms the foundation for understanding more complex concepts. The correct answer demonstrates proper knowledge of Angular fundamentals.",
+      "id": "q-angular-l1-4-m9eabm0f",
+      "moduleId": "angular-level-1-m9eabl6t",
+      "level": 1,
+      "topicId": "angular-m9eabl5q"
+    },
+    {
+      "question": "[Level 1] What is an important concept in Angular related to routing?",
+      "options": [
+        "The essential principle",
+        "The modern methodology",
+        "The basic framework",
+        "The reactive pattern"
+      ],
+      "answer": 0,
+      "explanation": "[Level 1] In Angular, the routing is particularly important because it forms the foundation for understanding more complex concepts. The correct answer demonstrates proper knowledge of Angular fundamentals.",
+      "id": "q-angular-l1-5-m9eabm0f",
+      "moduleId": "angular-level-1-m9eabl6t",
+      "level": 1,
+      "topicId": "angular-m9eabl5q"
+    },
+    {
+      "question": "[Level 2] What is an important concept in Angular related to services?",
+      "options": [
+        "The reactive principle",
+        "The fundamental methodology",
+        "The reactive framework",
+        "The core pattern"
+      ],
+      "answer": 0,
+      "explanation": "[Level 2] In Angular, the services is particularly important because it forms the foundation for understanding more complex concepts. The correct answer demonstrates proper knowledge of Angular fundamentals.",
+      "id": "q-angular-l2-1-m9eabmoh",
+      "moduleId": "angular-level-2-m9eabl6t",
+      "level": 2,
+      "topicId": "angular-m9eabl5q"
+    },
+    {
+      "question": "[Level 2] What is an important concept in Angular related to modules?",
+      "options": [
+        "The functional principle",
+        "The essential methodology",
+        "The essential framework",
+        "The modern pattern"
+      ],
+      "answer": 1,
+      "explanation": "[Level 2] In Angular, the modules is particularly important because it forms the foundation for understanding more complex concepts. The correct answer demonstrates proper knowledge of Angular fundamentals.",
+      "id": "q-angular-l2-2-m9eabmoi",
+      "moduleId": "angular-level-2-m9eabl6t",
+      "level": 2,
+      "topicId": "angular-m9eabl5q"
+    },
+    {
+      "question": "[Level 2] What is an important concept in Angular related to directives?",
+      "options": [
+        "The design principle",
+        "The core methodology",
+        "The basic framework",
+        "The core pattern"
+      ],
+      "answer": 2,
+      "explanation": "[Level 2] In Angular, the directives is particularly important because it forms the foundation for understanding more complex concepts. The correct answer demonstrates proper knowledge of Angular fundamentals.",
+      "id": "q-angular-l2-3-m9eabmoi",
+      "moduleId": "angular-level-2-m9eabl6t",
+      "level": 2,
+      "topicId": "angular-m9eabl5q"
+    },
+    {
+      "question": "[Level 2] What is an important concept in Angular related to pipes?",
+      "options": [
+        "The design principle",
+        "The structural methodology",
+        "The structural framework",
+        "The modern pattern"
+      ],
+      "answer": 3,
+      "explanation": "[Level 2] In Angular, the pipes is particularly important because it forms the foundation for understanding more complex concepts. The correct answer demonstrates proper knowledge of Angular fundamentals.",
+      "id": "q-angular-l2-4-m9eabmoi",
+      "moduleId": "angular-level-2-m9eabl6t",
+      "level": 2,
+      "topicId": "angular-m9eabl5q"
+    },
+    {
+      "question": "[Level 2] What is an important concept in Angular related to routing?",
+      "options": [
+        "The essential principle",
+        "The modern methodology",
+        "The basic framework",
+        "The reactive pattern"
+      ],
+      "answer": 0,
+      "explanation": "[Level 2] In Angular, the routing is particularly important because it forms the foundation for understanding more complex concepts. The correct answer demonstrates proper knowledge of Angular fundamentals.",
+      "id": "q-angular-l2-5-m9eabmoi",
+      "moduleId": "angular-level-2-m9eabl6t",
+      "level": 2,
+      "topicId": "angular-m9eabl5q"
+    },
+    {
+      "question": "[Level 3] What is an important concept in Angular related to services?",
+      "options": [
+        "The reactive principle",
+        "The fundamental methodology",
+        "The reactive framework",
+        "The core pattern"
+      ],
+      "answer": 0,
+      "explanation": "[Level 3] In Angular, the services is particularly important because it forms the foundation for understanding more complex concepts. The correct answer demonstrates proper knowledge of Angular fundamentals.",
+      "id": "q-angular-l3-1-m9eabnkr",
+      "moduleId": "angular-level-3-m9eabl6t",
+      "level": 3,
+      "topicId": "angular-m9eabl5q"
+    },
+    {
+      "question": "[Level 3] What is an important concept in Angular related to modules?",
+      "options": [
+        "The functional principle",
+        "The essential methodology",
+        "The essential framework",
+        "The modern pattern"
+      ],
+      "answer": 1,
+      "explanation": "[Level 3] In Angular, the modules is particularly important because it forms the foundation for understanding more complex concepts. The correct answer demonstrates proper knowledge of Angular fundamentals.",
+      "id": "q-angular-l3-2-m9eabnkr",
+      "moduleId": "angular-level-3-m9eabl6t",
+      "level": 3,
+      "topicId": "angular-m9eabl5q"
+    },
+    {
+      "question": "[Level 3] What is an important concept in Angular related to directives?",
+      "options": [
+        "The design principle",
+        "The core methodology",
+        "The basic framework",
+        "The core pattern"
+      ],
+      "answer": 2,
+      "explanation": "[Level 3] In Angular, the directives is particularly important because it forms the foundation for understanding more complex concepts. The correct answer demonstrates proper knowledge of Angular fundamentals.",
+      "id": "q-angular-l3-3-m9eabnks",
+      "moduleId": "angular-level-3-m9eabl6t",
+      "level": 3,
+      "topicId": "angular-m9eabl5q"
+    },
+    {
+      "question": "[Level 3] What is an important concept in Angular related to pipes?",
+      "options": [
+        "The design principle",
+        "The structural methodology",
+        "The structural framework",
+        "The modern pattern"
+      ],
+      "answer": 3,
+      "explanation": "[Level 3] In Angular, the pipes is particularly important because it forms the foundation for understanding more complex concepts. The correct answer demonstrates proper knowledge of Angular fundamentals.",
+      "id": "q-angular-l3-4-m9eabnks",
+      "moduleId": "angular-level-3-m9eabl6t",
+      "level": 3,
+      "topicId": "angular-m9eabl5q"
+    },
+    {
+      "question": "[Level 3] What is an important concept in Angular related to routing?",
+      "options": [
+        "The essential principle",
+        "The modern methodology",
+        "The basic framework",
+        "The reactive pattern"
+      ],
+      "answer": 0,
+      "explanation": "[Level 3] In Angular, the routing is particularly important because it forms the foundation for understanding more complex concepts. The correct answer demonstrates proper knowledge of Angular fundamentals.",
+      "id": "q-angular-l3-5-m9eabnks",
+      "moduleId": "angular-level-3-m9eabl6t",
+      "level": 3,
+      "topicId": "angular-m9eabl5q"
+    },
+    {
+      "question": "[Level 4] What is an important concept in Angular related to services?",
+      "options": [
+        "The reactive principle",
+        "The fundamental methodology",
+        "The reactive framework",
+        "The core pattern"
+      ],
+      "answer": 0,
+      "explanation": "[Level 4] In Angular, the services is particularly important because it forms the foundation for understanding more complex concepts. The correct answer demonstrates proper knowledge of Angular fundamentals.",
+      "id": "q-angular-l4-1-m9eabopq",
+      "moduleId": "angular-level-4-m9eabl6t",
+      "level": 4,
+      "topicId": "angular-m9eabl5q"
+    },
+    {
+      "question": "[Level 4] What is an important concept in Angular related to modules?",
+      "options": [
+        "The functional principle",
+        "The essential methodology",
+        "The essential framework",
+        "The modern pattern"
+      ],
+      "answer": 1,
+      "explanation": "[Level 4] In Angular, the modules is particularly important because it forms the foundation for understanding more complex concepts. The correct answer demonstrates proper knowledge of Angular fundamentals.",
+      "id": "q-angular-l4-2-m9eabopq",
+      "moduleId": "angular-level-4-m9eabl6t",
+      "level": 4,
+      "topicId": "angular-m9eabl5q"
+    },
+    {
+      "question": "[Level 4] What is an important concept in Angular related to directives?",
+      "options": [
+        "The design principle",
+        "The core methodology",
+        "The basic framework",
+        "The core pattern"
+      ],
+      "answer": 2,
+      "explanation": "[Level 4] In Angular, the directives is particularly important because it forms the foundation for understanding more complex concepts. The correct answer demonstrates proper knowledge of Angular fundamentals.",
+      "id": "q-angular-l4-3-m9eabopq",
+      "moduleId": "angular-level-4-m9eabl6t",
+      "level": 4,
+      "topicId": "angular-m9eabl5q"
+    },
+    {
+      "question": "[Level 4] What is an important concept in Angular related to pipes?",
+      "options": [
+        "The design principle",
+        "The structural methodology",
+        "The structural framework",
+        "The modern pattern"
+      ],
+      "answer": 3,
+      "explanation": "[Level 4] In Angular, the pipes is particularly important because it forms the foundation for understanding more complex concepts. The correct answer demonstrates proper knowledge of Angular fundamentals.",
+      "id": "q-angular-l4-4-m9eabopq",
+      "moduleId": "angular-level-4-m9eabl6t",
+      "level": 4,
+      "topicId": "angular-m9eabl5q"
+    },
+    {
+      "question": "[Level 4] What is an important concept in Angular related to routing?",
+      "options": [
+        "The essential principle",
+        "The modern methodology",
+        "The basic framework",
+        "The reactive pattern"
+      ],
+      "answer": 0,
+      "explanation": "[Level 4] In Angular, the routing is particularly important because it forms the foundation for understanding more complex concepts. The correct answer demonstrates proper knowledge of Angular fundamentals.",
+      "id": "q-angular-l4-5-m9eabopq",
+      "moduleId": "angular-level-4-m9eabl6t",
+      "level": 4,
+      "topicId": "angular-m9eabl5q"
+    },
+    {
+      "question": "[Level 5] What is an important concept in Angular related to services?",
+      "options": [
+        "The reactive principle",
+        "The fundamental methodology",
+        "The reactive framework",
+        "The core pattern"
+      ],
+      "answer": 0,
+      "explanation": "[Level 5] In Angular, the services is particularly important because it forms the foundation for understanding more complex concepts. The correct answer demonstrates proper knowledge of Angular fundamentals.",
+      "id": "q-angular-l5-1-m9eabq33",
+      "moduleId": "angular-level-5-m9eabl6t",
+      "level": 5,
+      "topicId": "angular-m9eabl5q"
+    },
+    {
+      "question": "[Level 5] What is an important concept in Angular related to modules?",
+      "options": [
+        "The functional principle",
+        "The essential methodology",
+        "The essential framework",
+        "The modern pattern"
+      ],
+      "answer": 1,
+      "explanation": "[Level 5] In Angular, the modules is particularly important because it forms the foundation for understanding more complex concepts. The correct answer demonstrates proper knowledge of Angular fundamentals.",
+      "id": "q-angular-l5-2-m9eabq33",
+      "moduleId": "angular-level-5-m9eabl6t",
+      "level": 5,
+      "topicId": "angular-m9eabl5q"
+    },
+    {
+      "question": "[Level 5] What is an important concept in Angular related to directives?",
+      "options": [
+        "The design principle",
+        "The core methodology",
+        "The basic framework",
+        "The core pattern"
+      ],
+      "answer": 2,
+      "explanation": "[Level 5] In Angular, the directives is particularly important because it forms the foundation for understanding more complex concepts. The correct answer demonstrates proper knowledge of Angular fundamentals.",
+      "id": "q-angular-l5-3-m9eabq33",
+      "moduleId": "angular-level-5-m9eabl6t",
+      "level": 5,
+      "topicId": "angular-m9eabl5q"
+    },
+    {
+      "question": "[Level 5] What is an important concept in Angular related to pipes?",
+      "options": [
+        "The design principle",
+        "The structural methodology",
+        "The structural framework",
+        "The modern pattern"
+      ],
+      "answer": 3,
+      "explanation": "[Level 5] In Angular, the pipes is particularly important because it forms the foundation for understanding more complex concepts. The correct answer demonstrates proper knowledge of Angular fundamentals.",
+      "id": "q-angular-l5-4-m9eabq33",
+      "moduleId": "angular-level-5-m9eabl6t",
+      "level": 5,
+      "topicId": "angular-m9eabl5q"
+    },
+    {
+      "question": "[Level 5] What is an important concept in Angular related to routing?",
+      "options": [
+        "The essential principle",
+        "The modern methodology",
+        "The basic framework",
+        "The reactive pattern"
+      ],
+      "answer": 0,
+      "explanation": "[Level 5] In Angular, the routing is particularly important because it forms the foundation for understanding more complex concepts. The correct answer demonstrates proper knowledge of Angular fundamentals.",
+      "id": "q-angular-l5-5-m9eabq33",
+      "moduleId": "angular-level-5-m9eabl6t",
+      "level": 5,
+      "topicId": "angular-m9eabl5q"
+    }
+  ],
   "attempts": []
 }

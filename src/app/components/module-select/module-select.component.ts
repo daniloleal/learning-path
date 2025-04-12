@@ -3,9 +3,8 @@ import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { QuizService } from '../../services/quiz.service';
 import { TopicService, Topic, TopicModule } from '../../services/topic.service';
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { map, switchMap, shareReplay, startWith, tap, catchError } from 'rxjs/operators';
-import { QuizAttempt } from '../../models/quiz-attempt.interface';
+import { Observable, of } from 'rxjs';
+import { map, tap, catchError, shareReplay } from 'rxjs/operators';
 
 @Component({
   selector: 'app-module-select',
@@ -71,8 +70,18 @@ export class ModuleSelectComponent implements OnInit {
   /**
    * Start a module quiz
    */
-  startModule(moduleId: number) {
-    this.router.navigate(['/quiz', this.topicId, moduleId]);
+  startModule(moduleId: string | number) {
+    // Make sure we're sending a number ID
+    const numericId = typeof moduleId === 'string' ? parseInt(moduleId, 10) : moduleId;
+    
+    // Guard against NaN
+    if (isNaN(numericId)) {
+      console.error('Invalid module ID:', moduleId);
+      return;
+    }
+    
+    console.log('Navigating to quiz with module ID:', numericId);
+    this.router.navigate(['/quiz', this.topicId, numericId]);
   }
 
   /**
