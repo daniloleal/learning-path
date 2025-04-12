@@ -1,28 +1,16 @@
-// src/app/services/ai-quiz.service.ts
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
-import { map, catchError, delay, retry, timeout } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
 import { Question } from '../models/questions.interface';
-import { environment } from '../../environments/environment';
+import { OpenAIService } from './openai.service';
+import { ErrorHandlingService } from './error-handling.service';
+import { TopicModule } from './topic.service';
 
 /**
- * Interface for AI Quiz content request
+ * Interface for AI generated quiz content
  */
-export interface AIQuizRequest {
+export interface AIQuizContent {
   topic: string;
-  userId: number;  // Added userId to the request
-  difficulty: 'easy' | 'medium' | 'hard' | 'progressive';
-  numModules: number;
-  questionsPerModule: number;
-}
-
-/**
- * Interface for AI Quiz content response
- */
-export interface AIQuizResponse {
-  topic: string;
-  userId: number;  // Added userId to the response
   modules: {
     moduleId: number;
     title: string;
@@ -37,74 +25,88 @@ export interface AIQuizResponse {
   providedIn: 'root',
 })
 export class AIQuizService {
-  private readonly apiUrl = environment.aiApiUrl;
-  private readonly currentUserId = 1; // In a real app, this would come from authentication service
+  private readonly USE_MOCK_DATA = false; // Set to true for testing without using OpenAI API
   
-  constructor(private http: HttpClient) {}
+  constructor(
+    private openAIService: OpenAIService,
+    private errorHandling: ErrorHandlingService
+  ) {}
 
   /**
-   * Generates quiz content for a given topic using AI
-   * @param topic The topic to generate questions for
-   * @returns Observable containing modules with questions
+   * Generate quiz content for a topic
    */
-  generateQuizContent(topic: string): Observable<AIQuizResponse> {
-    // Create a request object that follows the AIQuizRequest interface
-    const request: AIQuizRequest = {
-      topic: topic,
-      userId: this.currentUserId, // Associate with current user
-      difficulty: 'progressive', // Start easy, get harder with each module
-      numModules: 20, // 20 modules (levels)
-      questionsPerModule: 10 // 10 questions per module
-    };
-
-    // For development/demo purposes, we use a mock response
-    // In production, uncomment the HTTP call below
+  generateQuizContent(topic: string): Observable<AIQuizContent> {
+    if (this.USE_MOCK_DATA) {
+      return of(this.generateMockContent(topic));
+    }
     
-    /*
-    return this.http.post<AIQuizResponse>(`${this.apiUrl}/generate-quiz`, request).pipe(
-      timeout(30000), // Set timeout to 30 seconds for long-running AI operations
-      retry(1), // Retry once in case of temporary network issues
-      catchError((error: HttpErrorResponse) => {
-        console.error('AI API error:', error);
-        // For development fallback
-        if (environment.useMockData) {
-          console.warn('Falling back to mock data');
-          return of(this.generateMockQuizContent(topic));
-        }
-        return throwError(() => new Error('Failed to generate content'));
-      })
-    );
-    */
-    
-    // Mock implementation for demonstration
-    return of(this.generateMockQuizContent(topic)).pipe(
-      delay(2000), // Simulate network delay
-      catchError(error => throwError(() => new Error('Failed to generate content')))
-    );
+    // Use OpenAI to generate content
+    return this.openAIService.generateQuestions(topic, 1, 10)
+      .pipe(
+        map(questions => {
+          // Create modules with the generated questions
+          const modules = this.createModules(topic, questions);
+          
+          return {
+            topic,
+            modules
+          };
+        }),
+        catchError(error => {
+          console.warn('Error generating content with OpenAI. Falling back to mock data.');
+          return of(this.generateMockContent(topic));
+        })
+      );
   }
 
   /**
-   * Generate mock questions for testing purposes
-   * In production, this would be replaced with actual AI-generated content
-   * @param topic The topic to generate mock questions for
+   * Create modules with different difficulty levels
    */
-  private generateMockQuizContent(topic: string): AIQuizResponse {
-    const modules = [];
+  private createModules(topic: string, sampleQuestions: Question[]): AIQuizContent['modules'] {
+    const totalModules = 5;
+    const modules: AIQuizContent['modules'] = [];
     
-    for (let moduleId = 1; moduleId <= 20; moduleId++) {
+    for (let i = 1; i <= totalModules; i++) {
+      // Create variations of the questions for each module
+      const moduleQuestions = sampleQuestions.map(q => ({
+        ...q,
+        question: `[Level ${i}] ${q.question}`, // Add level to question
+        explanation: `[Level ${i}] ${q.explanation}` // Add level to explanation
+      }));
+      
+      modules.push({
+        moduleId: i,
+        title: `${topic} - Level ${i}`,
+        questions: moduleQuestions
+      });
+    }
+    
+    return modules;
+  }
+
+  /**
+   * Generate mock content for testing
+   */
+  private generateMockContent(topic: string): AIQuizContent {
+    const modules: AIQuizContent['modules'] = [];
+    
+    for (let moduleId = 1; moduleId <= 5; moduleId++) {
       const questions: Question[] = [];
       
       for (let q = 1; q <= 10; q++) {
+        // Ensure the correct answer is distributed evenly
+        const correctAnswer = (q + moduleId) % 4;
+        
         questions.push({
-          question: `${topic} question ${q} for module ${moduleId}?`,
+          question: `${topic} question ${q} for level ${moduleId}?`,
           options: [
             `Answer option 1 for ${topic}`,
             `Answer option 2 for ${topic}`,
             `Answer option 3 for ${topic}`,
             `Answer option 4 for ${topic}`
           ],
-          answer: Math.floor(Math.random() * 4), // Random correct answer index
-          explanation: `This is the explanation for ${topic} question ${q} in module ${moduleId}.`
+          answer: correctAnswer,
+          explanation: `This is the explanation for ${topic} question ${q} in level ${moduleId}. The correct answer is option ${correctAnswer + 1}.`
         });
       }
       
@@ -117,7 +119,6 @@ export class AIQuizService {
     
     return {
       topic,
-      userId: this.currentUserId, // Include the user ID in the response
       modules
     };
   }

@@ -1,145 +1,4 @@
 {
-  "questions": [
-    {
-      "userId": 1,
-      "moduleId": 1,
-      "questions": [
-        {
-          "question": "What is Angular?",
-          "options": [
-            "A JavaScript library for building user interfaces",
-            "A complete framework for building web applications",
-            "A back-end server technology",
-            "A database management system"
-          ],
-          "answer": 1,
-          "explanation": "Angular is a complete framework for building web applications, providing features like routing, forms, HTTP client and more."
-        }
-      ]
-    },
-    {
-      "userId": 1,
-      "moduleId": 2,
-      "questions": [
-        {
-          "question": "What are Angular pipes used for?",
-          "options": [
-            "To transform data before displaying it in a template",
-            "To handle HTTP requests and responses",
-            "To manage component lifecycle hooks",
-            "To create reusable UI components"
-          ],
-          "answer": 0,
-          "explanation": "Pipes in Angular are used to transform data before displaying it in views. Examples include DatePipe, UpperCasePipe, LowerCasePipe, CurrencyPipe, etc."
-        }
-      ]
-    }
-  ],
-  "attempts": [
-    {
-      "moduleId": 1,
-      "score": 1,
-      "total": 1,
-      "duration": 2,
-      "answers": [
-        {
-          "question": "What is Angular?",
-          "selectedOption": 1,
-          "correctOption": 1,
-          "isCorrect": true
-        }
-      ],
-      "userId": 1,
-      "timestamp": 1744414894201,
-      "id": "0f83f2af-ef12-4ae6-bd36-1576df70b9f4"
-    },
-    {
-      "moduleId": 1,
-      "score": 1,
-      "total": 1,
-      "duration": 3,
-      "answers": [
-        {
-          "question": "What is Angular?",
-          "selectedOption": 1,
-          "correctOption": 1,
-          "isCorrect": true
-        }
-      ],
-      "userId": 1,
-      "timestamp": 1744415071609,
-      "id": "be9570a5-c814-48e0-955a-33fe68e4a997"
-    },
-    {
-      "moduleId": 1,
-      "score": 1,
-      "total": 1,
-      "duration": 2,
-      "answers": [
-        {
-          "question": "What is Angular?",
-          "selectedOption": 1,
-          "correctOption": 1,
-          "isCorrect": true
-        }
-      ],
-      "userId": 1,
-      "timestamp": 1744415130066,
-      "id": "6e111ad7-456f-4652-8343-2eb5a6edaa40"
-    },
-    {
-      "moduleId": 1,
-      "score": 0,
-      "total": 1,
-      "duration": 3,
-      "answers": [
-        {
-          "question": "What is Angular?",
-          "selectedOption": 0,
-          "correctOption": 1,
-          "isCorrect": false
-        }
-      ],
-      "userId": 1,
-      "timestamp": 1744415247340,
-      "id": "f1b2efd3-d758-4c77-b904-d5e4b2bfe4de"
-    },
-    {
-      "moduleId": 1,
-      "score": 0,
-      "total": 1,
-      "duration": 3,
-      "answers": [
-        {
-          "question": "What is Angular?",
-          "selectedOption": 0,
-          "correctOption": 1,
-          "isCorrect": false
-        }
-      ],
-      "userId": 1,
-      "timestamp": 1744421619713,
-      "id": "cedc9fcd-2a4f-4773-8095-90135bb952ba"
-    },
-    {
-      "moduleId": 1,
-      "score": 0,
-      "total": 1,
-      "duration": 2,
-      "answers": [
-        {
-          "question": "What is Angular?",
-          "selectedOption": 0,
-          "correctOption": 1,
-          "isCorrect": false
-        }
-      ],
-      "userId": 1,
-      "timestamp": 1744421642265,
-      "id": "d2f1507f-effa-41a0-9b60-42b38312cb8a"
-    }
-  ],
-  "topics": [],
   "users": [
     {
       "id": 1,
@@ -147,5 +6,69 @@
       "email": "test@example.com",
       "createdAt": 1712937600000
     }
-  ]
+  ],
+  "topics": [
+    {
+      "userId": 1,
+      "name": "Angular",
+      "completedModules": 0,
+      "totalModules": 5,
+      "id": "angular-m9do057g",
+      "createdAt": 1744429028956
+    }
+  ],
+  "modules": [
+    {
+      "id": "angular-level-1-m9do058c",
+      "level": 1,
+      "topicId": "angular-m9do057g",
+      "title": "Angular - Level 1",
+      "isUnlocked": true,
+      "isCompleted": false,
+      "bestScore": 0,
+      "attemptCount": 0
+    },
+    {
+      "id": "angular-level-3-m9do058c",
+      "level": 3,
+      "topicId": "angular-m9do057g",
+      "title": "Angular - Level 3",
+      "isUnlocked": false,
+      "isCompleted": false,
+      "bestScore": 0,
+      "attemptCount": 0
+    },
+    {
+      "id": "angular-level-4-m9do058c",
+      "level": 4,
+      "topicId": "angular-m9do057g",
+      "title": "Angular - Level 4",
+      "isUnlocked": false,
+      "isCompleted": false,
+      "bestScore": 0,
+      "attemptCount": 0
+    },
+    {
+      "id": "angular-level-2-m9do058c",
+      "level": 2,
+      "topicId": "angular-m9do057g",
+      "title": "Angular - Level 2",
+      "isUnlocked": false,
+      "isCompleted": false,
+      "bestScore": 0,
+      "attemptCount": 0
+    },
+    {
+      "id": "angular-level-5-m9do058c",
+      "level": 5,
+      "topicId": "angular-m9do057g",
+      "title": "Angular - Level 5",
+      "isUnlocked": false,
+      "isCompleted": false,
+      "bestScore": 0,
+      "attemptCount": 0
+    }
+  ],
+  "questions": [],
+  "attempts": []
 }

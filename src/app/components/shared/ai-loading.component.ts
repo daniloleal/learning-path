@@ -1,0 +1,38 @@
+// src/app/components/shared/ai-loading.component.ts
+import { Component, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+/**
+ * Component for displaying a loading indicator during AI content generation
+ */
+@Component({
+  selector: 'app-ai-loading',
+  standalone: true,
+  imports: [CommonModule],
+  template: `
+    <div class="bg-blue-50 border border-blue-100 rounded-lg p-6 my-4">
+      <div class="flex flex-col items-center text-center">
+        <div class="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mb-4"></div>
+        <h3 class="text-lg font-medium text-blue-800 mb-2">{{ title }}</h3>
+        <p class="text-blue-700 max-w-lg">{{ message }}</p>
+        
+        <div *ngIf="showProgress" class="w-full max-w-md mt-6">
+          <div class="h-2 bg-blue-100 rounded-full">
+            <div 
+              class="h-2 bg-blue-600 rounded-full transition-all duration-300" 
+              [style.width.%]="progress"
+            ></div>
+          </div>
+          <div class="mt-2 text-sm text-blue-700">{{ progressText }}</div>
+        </div>
+      </div>
+    </div>
+  `
+})
+export class AILoadingComponent {
+  @Input() title = 'Generating AI Content';
+  @Input() message = 'Please wait while our AI generates high-quality questions for your quiz. This may take a minute...';
+  @Input() showProgress = true;
+  @Input() progress = 0;
+  @Input() progressText = 'Starting up...';
+}

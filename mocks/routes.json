@@ -1,11 +1,25 @@
 {
-  "/api/questions/:moduleId": "/questions?moduleId=:moduleId&userId=:userId",
-  "/api/user-questions/:userId/:moduleId": "/questions?userId=:userId&moduleId=:moduleId",
+  "/api/users": "/users",
+  "/api/users/:id": "/users/:id",
+  
+  "/api/topics": "/topics",
+  "/api/topics/:id": "/topics/:id",
+  "/api/user-topics/:userId": "/topics?userId=:userId",
+  
+  "/api/modules": "/modules",
+  "/api/modules/:id": "/modules/:id",
+  "/api/topic-modules/:topicId": "/modules?topicId=:topicId",
+  
+  "/api/questions": "/questions",
+  "/api/questions/:id": "/questions/:id",
+  "/api/module-questions/:moduleId": "/questions?moduleId=:moduleId",
+  "/api/topic-questions/:topicId": "/questions?topicId=:topicId",
+  "/api/topic-module-questions/:topicId/:moduleId": "/questions?topicId=:topicId&moduleId=:moduleId",
+  
   "/api/attempts": "/attempts",
   "/api/attempts/:id": "/attempts/:id",
   "/api/user-attempts/:userId": "/attempts?userId=:userId",
-  "/api/user-attempts/:userId/:moduleId": "/attempts?userId=:userId&moduleId=:moduleId",
-  "/api/topics": "/topics",
-  "/api/topics/:id": "/topics/:id",
-  "/api/user-topics/:userId": "/topics?userId=:userId"
+  "/api/module-attempts/:moduleId": "/attempts?moduleId=:moduleId",
+  "/api/user-module-attempts/:userId/:moduleId": "/attempts?userId=:userId&moduleId=:moduleId",
+  "/api/topic-attempts/:topicId": "/attempts?topicId=:topicId"
 }

@@ -1,34 +1,31 @@
-// src/app/services/topic.service.ts
+// topic.service.ts - Improved version
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { StorageService } from './storage.service';
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { QuizAttempt } from '../models/quiz-attempt.interface';
-import { Question } from '../models/questions.interface';
-import { AIQuizResponse } from './ai-quiz.service';
+import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
+import { catchError, map, tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
-import { catchError, tap } from 'rxjs/operators';
+import { ErrorHandlingService } from './error-handling.service';
 
 /**
  * Topic data structure
  */
 export interface Topic {
   id: string;
-  userId: number;  // Added userId to the Topic interface
+  userId: number;
   name: string;
-  modules: TopicModule[];
   createdAt: number;
   completedModules: number;
   totalModules: number;
 }
 
 /**
- * Topic module data structure
+ * Module data structure
  */
 export interface TopicModule {
-  moduleId: number;
+  id: number;
+  topicId: string;
   title: string;
-  questions?: Question[]; // Made optional since not all modules may have questions loaded
   isUnlocked: boolean;
   isCompleted: boolean;
   bestScore: number;
@@ -42,71 +39,61 @@ export interface TopicModule {
   providedIn: 'root',
 })
 export class TopicService {
-  private static readonly STORAGE_KEY = 'topics';
   private readonly apiUrl = environment.apiUrl;
   private readonly currentUserId = 1; // In a real app, this would come from authentication service
-  private topics: Topic[] = [];
   private topicsSubject = new BehaviorSubject<Topic[]>([]);
-  
+  private topics: Topic[] = [];
+  private modules: Record<string, TopicModule[]> = {}; // Keyed by topicId
+
   constructor(
+    private http: HttpClient,
     private storageService: StorageService,
-    private http: HttpClient
+    private errorHandling: ErrorHandlingService
   ) {
-    this.loadFromStorage();
-    this.loadFromServer(); // Try to load from server first
+    this.loadUserTopics();
   }
 
   /**
-   * Load topics from local storage
+   * Load topics for the current user
    */
-  private loadFromStorage(): void {
-    const userStorageKey = `${TopicService.STORAGE_KEY}-user-${this.currentUserId}`;
-    const storedTopics = this.storageService.getItem(userStorageKey);
-    if (storedTopics) {
-      try {
-        this.topics = JSON.parse(storedTopics);
+  private loadUserTopics(): void {
+    this.http.get<Topic[]>(`${this.apiUrl}/user-topics/${this.currentUserId}`)
+      .pipe(
+        catchError(error => {
+          this.errorHandling.handleError(error, 'Error loading topics', false);
+          return of([]);
+        })
+      )
+      .subscribe(topics => {
+        this.topics = topics;
         this.topicsSubject.next([...this.topics]);
-      } catch (error) {
-        console.error('Error parsing stored topics:', error);
-        this.topics = [];
-        this.topicsSubject.next([]);
-      }
-    }
+        
+        // Load modules for each topic
+        topics.forEach(topic => this.loadTopicModules(topic.id));
+      });
   }
 
   /**
-   * Try to load topics from server
+   * Load modules for a specific topic
    */
-  private loadFromServer(): void {
-    this.http.get<Topic[]>(`${this.apiUrl}/user-topics/${this.currentUserId}`).pipe(
-      tap(topics => {
-        if (topics && topics.length > 0) {
-          this.topics = topics;
-          this.topicsSubject.next([...this.topics]);
-          this.saveToStorage(); // Cache the results
-        }
-      }),
-      catchError(error => {
-        console.error('Error loading topics from server, using local storage:', error);
-        return of(null);
-      })
-    ).subscribe();
-  }
-
-  /**
-   * Save topics to local storage
-   */
-  private saveToStorage(): void {
-    const userStorageKey = `${TopicService.STORAGE_KEY}-user-${this.currentUserId}`;
-    this.storageService.setItem(userStorageKey, JSON.stringify(this.topics));
-    this.topicsSubject.next([...this.topics]);
+  private loadTopicModules(topicId: string): void {
+    this.http.get<TopicModule[]>(`${this.apiUrl}/topic-modules/${topicId}`)
+      .pipe(
+        catchError(error => {
+          this.errorHandling.handleError(error, `Error loading modules for topic ${topicId}`, false);
+          return of([]);
+        })
+      )
+      .subscribe(modules => {
+        this.modules[topicId] = modules;
+      });
   }
 
   /**
    * Get all topics for the current user
    */
   getAllTopics(): Topic[] {
-    return this.topics.filter(topic => topic.userId === this.currentUserId);
+    return this.topics;
   }
 
   /**
@@ -120,150 +107,122 @@ export class TopicService {
    * Get a specific topic by ID
    */
   getTopic(topicId: string): Topic | undefined {
-    return this.topics.find(topic => topic.id === topicId && topic.userId === this.currentUserId);
+    return this.topics.find(topic => topic.id === topicId);
   }
 
   /**
-   * Add a new topic with generated quiz content
+   * Get modules for a specific topic
    */
-  addTopic(name: string, content: AIQuizResponse): Topic {
-    const topicId = this.generateId(name);
-    
-    // Map the AI-generated content to our topic structure
-    const modules: TopicModule[] = content.modules.map((mod, index) => ({
-      moduleId: mod.moduleId,
-      title: mod.title,
-      questions: mod.questions,
-      isUnlocked: index === 0, // First module is always unlocked
-      isCompleted: false,
-      bestScore: 0,
-      attemptCount: 0
-    }));
+  getTopicModules(topicId: string): TopicModule[] {
+    return this.modules[topicId] || [];
+  }
 
-    const newTopic: Topic = {
-      id: topicId,
-      userId: this.currentUserId, // Associate with current user
-      name,
-      modules,
-      createdAt: Date.now(),
-      completedModules: 0,
-      totalModules: modules.length
+  /**
+   * Get modules for a specific topic as an observable
+   */
+  getTopicModules$(topicId: string): Observable<TopicModule[]> {
+    if (this.modules[topicId]) {
+      return of(this.modules[topicId]);
+    }
+    
+    return this.http.get<TopicModule[]>(`${this.apiUrl}/topic-modules/${topicId}`)
+      .pipe(
+        tap(modules => {
+          this.modules[topicId] = modules;
+        }),
+        catchError(error => {
+          this.errorHandling.handleError(error, `Error loading modules for topic ${topicId}`, false);
+          return of([]);
+        })
+      );
+  }
+
+  /**
+   * Add a new topic
+   */
+  addTopic(topic: Omit<Topic, 'id' | 'createdAt'>): Observable<Topic> {
+    const newTopic = {
+      ...topic,
+      id: this.generateId(topic.name),
+      createdAt: Date.now()
     };
 
-    // Save to database
-    this.saveTopicQuestions(newTopic);
-
-    // Add to local collection and update storage
-    this.topics.push(newTopic);
-    this.saveToStorage();
-    
-    return newTopic;
+    return this.http.post<Topic>(`${this.apiUrl}/topics`, newTopic)
+      .pipe(
+        tap(savedTopic => {
+          this.topics.push(savedTopic);
+          this.topicsSubject.next([...this.topics]);
+        }),
+        catchError(error => {
+          return this.errorHandling.handleError(error, 'Error creating topic');
+        })
+      );
   }
 
   /**
-   * Save topic questions to database
-   * This would be an API call in production
+   * Update topic progress
    */
-  private saveTopicQuestions(topic: Topic): void {
-    // For each module with questions, save to the database
-    topic.modules.forEach(module => {
-      if (module.questions && module.questions.length > 0) {
-        const questionData = {
-          userId: this.currentUserId,
-          moduleId: module.moduleId,
-          questions: module.questions
-        };
-
-        // This would be an API call in production
-        // For now, we'll just log it
-        console.log(`Saving questions for user ${this.currentUserId}, module ${module.moduleId}`);
-        
-        // You would make an API call here:
-        // this.http.post(`${this.apiUrl}/questions`, questionData).subscribe();
-        
-        // Remove questions from module after saving to database
-        // This keeps the local storage smaller
-        delete module.questions;
-      }
-    });
-  }
-
-  /**
-   * Remove a topic
-   */
-  removeTopic(topicId: string): void {
-    this.topics = this.topics.filter(topic => 
-      !(topic.id === topicId && topic.userId === this.currentUserId)
-    );
-    this.saveToStorage();
-  }
-
-  /**
-   * Update topic statistics after a quiz attempt
-   */
-  updateTopicStats(topicId: string, moduleId: number, attempt: QuizAttempt): void {
-    const topicIndex = this.topics.findIndex(topic => 
-      topic.id === topicId && topic.userId === this.currentUserId
-    );
+  updateTopicProgress(topicId: string, completedModules: number): Observable<Topic> {
+    const topic = this.topics.find(t => t.id === topicId);
     
-    if (topicIndex === -1) return;
-    
-    const topic = this.topics[topicIndex];
-    const moduleIndex = topic.modules.findIndex(mod => mod.moduleId === moduleId);
-    if (moduleIndex === -1) return;
-    
-    // Update module stats
-    const module = topic.modules[moduleIndex];
-    module.attemptCount++;
-    
-    const scorePercentage = Math.round((attempt.score / attempt.total) * 100);
-    if (scorePercentage > module.bestScore) {
-      module.bestScore = scorePercentage;
+    if (!topic) {
+      return throwError(() => new Error(`Topic with ID ${topicId} not found`));
     }
     
-    // Mark as completed if score is 90% or higher
-    const wasCompletedBefore = module.isCompleted;
-    if (scorePercentage >= 90 && !module.isCompleted) {
-      module.isCompleted = true;
-      topic.completedModules++;
-      
-      // Unlock the next module if there is one
-      if (moduleIndex < topic.modules.length - 1) {
-        topic.modules[moduleIndex + 1].isUnlocked = true;
-      }
-    }
+    const updatedTopic = {
+      ...topic,
+      completedModules
+    };
     
-    // Create a new object to trigger change detection
-    this.topics[topicIndex] = {...topic};
-    this.saveToStorage();
+    return this.http.put<Topic>(`${this.apiUrl}/topics/${topicId}`, updatedTopic)
+      .pipe(
+        tap(savedTopic => {
+          const index = this.topics.findIndex(t => t.id === topicId);
+          if (index !== -1) {
+            this.topics[index] = savedTopic;
+            this.topicsSubject.next([...this.topics]);
+          }
+        }),
+        catchError(error => {
+          return this.errorHandling.handleError(error, 'Error updating topic progress');
+        })
+      );
   }
 
   /**
    * Reset all progress for a topic
    */
-  resetTopicProgress(topicId: string): boolean {
-    const topicIndex = this.topics.findIndex(topic => 
-      topic.id === topicId && topic.userId === this.currentUserId
-    );
+  resetTopicProgress(topicId: string): Observable<boolean> {
+    const topicModules = this.modules[topicId];
     
-    if (topicIndex === -1) return false;
+    if (!topicModules) {
+      return throwError(() => new Error(`Modules for topic ${topicId} not found`));
+    }
     
-    const topic = {...this.topics[topicIndex]};
-    
-    // Reset all modules except first one
-    topic.modules = topic.modules.map((module, index) => ({
+    // Reset all modules
+    const resetModules = topicModules.map((module, index) => ({
       ...module,
-      isUnlocked: index === 0, // Only first module is unlocked
+      isUnlocked: index === 0,
       isCompleted: false,
       bestScore: 0,
       attemptCount: 0
     }));
     
-    topic.completedModules = 0;
-    this.topics[topicIndex] = topic;
-    this.saveToStorage();
+    // Update modules in the database (batch update)
+    const updateRequests = resetModules.map(module => 
+      this.http.put(`${this.apiUrl}/modules/${module.id}`, module)
+    );
     
-    return true;
+    // Update topic progress
+    const topic = this.topics.find(t => t.id === topicId);
+    if (topic) {
+      this.updateTopicProgress(topicId, 0).subscribe();
+    }
+    
+    // Store the updated modules locally
+    this.modules[topicId] = resetModules;
+    
+    return of(true);
   }
 
   /**

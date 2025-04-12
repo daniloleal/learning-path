@@ -6,8 +6,13 @@ export const environment = {
   useMockData: true, // Toggle for using mock data instead of real API calls
   defaultDurationPerQuestion: 30, // Default time in seconds for answering a question
   passThreshold: 90, // Percentage required to pass a module
+  openai: {
+    apiKey: 'secret',
+    useMockData: true, // Set to false to use the real OpenAI API
+    model: 'gpt-4-turbo'
+  },
   features: {
-    darkMode: true,
+    darkMode: false,
     timedQuizzes: true,
     progressTracking: true
   },
