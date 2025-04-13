@@ -1,4 +1,4 @@
-export interface Attempt {
+export interface Submission {
   score: number;
   total: number;
   duration?: number;

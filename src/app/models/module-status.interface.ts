@@ -3,5 +3,5 @@ export interface ModuleStatus {
   bestScore: number;
   isUnlocked: boolean;
   isCompleted: boolean;
-  attemptCount: number;
+  submissionCount: number;
 }

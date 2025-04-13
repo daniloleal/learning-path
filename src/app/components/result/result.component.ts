@@ -4,8 +4,8 @@ import { CommonModule } from '@angular/common';
 import { QuizService } from '../../services/quiz.service';
 import { NavigationService } from '../../services/navigation.service';
 import { ErrorHandlingService } from '../../services/error-handling.service';
-import { Attempt } from '../../models/attempt.interface';
-import { QuizAttempt } from '../../models/quiz-attempt.interface';
+import { Submission } from '../../models/submission.interface';
+import { QuizSubmission } from '../../models/quiz-submission.interface';
 import { Subscription } from 'rxjs';
 import { catchError, finalize } from 'rxjs/operators';
 
@@ -21,8 +21,8 @@ import { catchError, finalize } from 'rxjs/operators';
       <button (click)="goHome()" class="flex items-center gap-1 px-3 py-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
         <span>←</span> Back to Levels
       </button>
-      <a routerLink="/attempts" class="flex items-center gap-1 px-3 py-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
-        View All Attempts
+      <a routerLink="/submissions" class="flex items-center gap-1 px-3 py-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+        View All Submissions
         <span>→</span>
       </a>
     </div>
@@ -90,28 +90,28 @@ import { catchError, finalize } from 'rxjs/operators';
           </div>
         </div>
         
-        <!-- Previous attempts section -->
-        <div *ngIf="hasMultipleAttempts">
-          <h2 class="text-lg font-semibold mb-3">Previous Attempts</h2>
+        <!-- Previous submissions section -->
+        <div *ngIf="hasMultipleSubmissions">
+          <h2 class="text-lg font-semibold mb-3">Previous Submissions</h2>
           <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
             <table class="w-full text-sm">
               <thead>
                 <tr class="text-left text-gray-500 border-b border-gray-200">
-                  <th class="pb-2 font-medium">Attempt</th>
+                  <th class="pb-2 font-medium">Submission</th>
                   <th class="pb-2 font-medium">Score</th>
                   <th class="pb-2 font-medium">Accuracy</th>
                   <th class="pb-2 font-medium">Time</th>
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let attempt of moduleAttempts; let i = index" 
+                <tr *ngFor="let submission of moduleSubmissions; let i = index" 
                     class="border-b border-gray-100 last:border-0"
-                    [ngClass]="{'font-medium': i === moduleAttempts.length - 1}"
+                    [ngClass]="{'font-medium': i === moduleSubmissions.length - 1}"
                 >
-                  <td class="py-3">{{ moduleAttempts.length - i }}</td>
-                  <td class="py-3">{{ attempt.score }}/{{ attempt.total }}</td>
-                  <td class="py-3">{{ (attempt.score / attempt.total * 100) | number:'1.0-0' }}%</td>
-                  <td class="py-3">{{ formatTime(attempt.duration) }}</td>
+                  <td class="py-3">{{ moduleSubmissions.length - i }}</td>
+                  <td class="py-3">{{ submission.score }}/{{ submission.total }}</td>
+                  <td class="py-3">{{ (submission.score / submission.total * 100) | number:'1.0-0' }}%</td>
+                  <td class="py-3">{{ formatTime(submission.duration) }}</td>
                 </tr>
               </tbody>
             </table>
@@ -144,7 +144,7 @@ import { catchError, finalize } from 'rxjs/operators';
           <div class="font-medium">{{ formatModuleKey(key) }}</div>
           <div class="flex justify-between text-sm mt-1">
             <span class="text-gray-600">Best score: {{ getBestScore(key) }}%</span>
-            <span class="text-gray-600">{{ getAttemptCount(key) }} attempts</span>
+            <span class="text-gray-600">{{ getsubmissionCount(key) }} submissions</span>
           </div>
           <div class="h-2 bg-gray-200 rounded-full mt-2 overflow-hidden">
             <div 
@@ -164,8 +164,8 @@ export class ResultComponent implements OnInit, OnDestroy {
   total = 0;
   module = 1;
   duration = 0;
-  allAttempts: Record<string, Attempt[]> = {};
-  moduleAttempts: QuizAttempt[] = [];
+  allSubmissions: Record<string, Submission[]> = {};
+  moduleSubmissions: QuizSubmission[] = [];
   isLoading = false;
   
   private subscription = new Subscription();
@@ -192,34 +192,34 @@ export class ResultComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.isLoading = true;
     
-    // Load module attempts
+    // Load module submissions
     this.subscription.add(
-      this.quizService.getAttempts(this.module).pipe(
+      this.quizService.getSubmissions(this.module).pipe(
         catchError(error => {
-          this.errorHandling.handleError(error, 'Failed to load module attempts');
+          this.errorHandling.handleError(error, 'Failed to load module submissions');
           return [];
         })
-      ).subscribe(attempts => {
-        this.moduleAttempts = attempts
+      ).subscribe(submissions => {
+        this.moduleSubmissions = submissions
           .map(a => ({
             score: a.score,
             total: a.total,
             duration: a.duration
-          } as QuizAttempt))
+          } as QuizSubmission))
           .reverse();
       })
     );
     
-    // Load all attempts and group them by module
+    // Load all submissions and group them by module
     this.subscription.add(
-      this.quizService.getAttempts().pipe(
+      this.quizService.getSubmissions().pipe(
         finalize(() => this.isLoading = false),
         catchError(error => {
-          this.errorHandling.handleError(error, 'Failed to load attempts');
+          this.errorHandling.handleError(error, 'Failed to load submissions');
           return [];
         })
-      ).subscribe(attempts => {
-        this.allAttempts = this.groupAttemptsByModule(attempts);
+      ).subscribe(submissions => {
+        this.allSubmissions = this.groupSubmissionsByModule(submissions);
       })
     );
   }
@@ -229,20 +229,20 @@ export class ResultComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Group attempts by module ID
+   * Group submissions by module ID
    */
-  private groupAttemptsByModule(attempts: QuizAttempt[]): Record<string, Attempt[]> {
-    const grouped: Record<string, Attempt[]> = {};
+  private groupSubmissionsByModule(submissions: QuizSubmission[]): Record<string, Submission[]> {
+    const grouped: Record<string, Submission[]> = {};
     
-    attempts.forEach(attempt => {
-      const key = `module-${attempt.moduleId}`;
+    submissions.forEach(submission => {
+      const key = `module-${submission.moduleId}`;
       if (!grouped[key]) {
         grouped[key] = [];
       }
       grouped[key].push({
-        score: attempt.score,
-        total: attempt.total,
-        duration: attempt.duration
+        score: submission.score,
+        total: submission.total,
+        duration: submission.duration
       });
     });
     
@@ -250,15 +250,15 @@ export class ResultComponent implements OnInit, OnDestroy {
   }
 
   get previousScoreKeys(): string[] {
-    return Object.keys(this.allAttempts).sort((a, b) => {
+    return Object.keys(this.allSubmissions).sort((a, b) => {
       const aNum = parseInt(a.replace('module-', ''));
       const bNum = parseInt(b.replace('module-', ''));
       return aNum - bNum;
     });
   }
 
-  get hasMultipleAttempts(): boolean {
-    return this.moduleAttempts.length > 0;
+  get hasMultipleSubmissions(): boolean {
+    return this.moduleSubmissions.length > 0;
   }
 
   currentDateFormated(): string {
@@ -289,15 +289,15 @@ export class ResultComponent implements OnInit, OnDestroy {
   }
 
   getBestScore(key: string): number {
-    const attempts = this.allAttempts[key] || [];
-    if (!attempts.length) return 0;
+    const submissions = this.allSubmissions[key] || [];
+    if (!submissions.length) return 0;
     
-    const bestScore = Math.max(...attempts.map(a => (a.score / a.total) * 100));
+    const bestScore = Math.max(...submissions.map(a => (a.score / a.total) * 100));
     return Math.round(bestScore);
   }
 
-  getAttemptCount(key: string): number {
-    return (this.allAttempts[key] || []).length;
+  getsubmissionCount(key: string): number {
+    return (this.allSubmissions[key] || []).length;
   }
 
   getPerformanceColorClass(): string {

@@ -3,11 +3,11 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
 import { catchError, tap, shareReplay, retry, map } from 'rxjs/operators';
 import { Question } from '../models/questions.interface';
-import { QuizAttempt } from '../models/quiz-attempt.interface';
+import { QuizSubmission } from '../models/quiz-submission.interface';
 import { environment } from '../../environments/environment';
 
 /**
- * Service responsible for quiz data management including questions and user attempts
+ * Service responsible for quiz data management including questions and user submissions
  */
 @Injectable({
   providedIn: 'root',
@@ -72,59 +72,59 @@ export class QuizService {
   }
 
   /**
-   * Submit a quiz attempt
-   * @param attempt The quiz attempt without user ID, ID, and timestamp
-   * @returns Observable of the saved quiz attempt
+   * Submit a quiz submission
+   * @param submission The quiz submission without user ID, ID, and timestamp
+   * @returns Observable of the saved quiz submission
    */
-  submitAttempt(attempt: Omit<QuizAttempt, 'userId' | 'id' | 'timestamp'>): Observable<QuizAttempt> {
-    const fullAttempt: QuizAttempt = {
-      ...attempt,
+  submitSubmission(submission: Omit<QuizSubmission, 'userId' | 'id' | 'timestamp'>): Observable<QuizSubmission> {
+    const fullSubmission: QuizSubmission = {
+      ...submission,
       userId: this.currentUserId,
       timestamp: Date.now(),
       id: crypto.randomUUID(), // More reliable ID generation
     };
 
-    return this.http.post<QuizAttempt>(`${this.apiUrl}/attempts`, fullAttempt).pipe(
+    return this.http.post<QuizSubmission>(`${this.apiUrl}/submissions`, fullSubmission).pipe(
       catchError(error => {
-        console.error('Failed to submit attempt to server:', error);
-        return of(fullAttempt); // Return the attempt even if submission fails
+        console.error('Failed to submit submission to server:', error);
+        return of(fullSubmission); // Return the submission even if submission fails
       })
     );
   }
 
   /**
-   * Get attempts for a specific module or all attempts if no module ID provided
-   * @param moduleId Optional module ID to filter attempts
-   * @returns Observable of quiz attempts
+   * Get submissions for a specific module or all submissions if no module ID provided
+   * @param moduleId Optional module ID to filter submissions
+   * @returns Observable of quiz submissions
    */
-  getAttempts(moduleId?: number | string): Observable<QuizAttempt[]> {
+  getSubmissions(moduleId?: number | string): Observable<QuizSubmission[]> {
     let url: string;
     
     if (moduleId) {
-      // Use the new user-attempts endpoint that supports filtering by both userId and moduleId
-      url = `${this.apiUrl}/attempts?userId=${this.currentUserId}&moduleId=${moduleId}`;
+      // Use the new user-submissions endpoint that supports filtering by both userId and moduleId
+      url = `${this.apiUrl}/submissions?userId=${this.currentUserId}&moduleId=${moduleId}`;
     } else {
-      // Get all attempts for the current user
-      url = `${this.apiUrl}/attempts?userId=${this.currentUserId}`;
+      // Get all submissions for the current user
+      url = `${this.apiUrl}/submissions?userId=${this.currentUserId}`;
     }
     
-    return this.http.get<QuizAttempt[]>(url).pipe(
+    return this.http.get<QuizSubmission[]>(url).pipe(
       catchError(error => {
-        console.error('Error loading attempts:', error);
+        console.error('Error loading submissions:', error);
         return of([]);
       })
     );
   }
 
   /**
-   * Get attempts for a specific user
-   * @param userId The user ID to get attempts for
-   * @returns Observable of quiz attempts
+   * Get submissions for a specific user
+   * @param userId The user ID to get submissions for
+   * @returns Observable of quiz submissions
    */
-  getUserAttempts(userId: number): Observable<QuizAttempt[]> {
-    return this.http.get<QuizAttempt[]>(`${this.apiUrl}/attempts?userId=${userId}`).pipe(
+  getUserSubmissions(userId: number): Observable<QuizSubmission[]> {
+    return this.http.get<QuizSubmission[]>(`${this.apiUrl}/submissions?userId=${userId}`).pipe(
       catchError(error => {
-        console.error('Error loading user attempts:', error);
+        console.error('Error loading user submissions:', error);
         return of([]);
       })
     );
@@ -135,7 +135,7 @@ export class QuizService {
    * @returns Observable indicating completion
    */
   resetProgress(): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/attempts?userId=${this.currentUserId}`).pipe(
+    return this.http.delete<void>(`${this.apiUrl}/submissions?userId=${this.currentUserId}`).pipe(
       catchError(error => {
         console.error('Error resetting progress:', error);
         return of(void 0);

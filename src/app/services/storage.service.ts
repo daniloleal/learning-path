@@ -54,7 +54,7 @@ export class StorageService {
     } catch (error) {
       console.error('Error writing to localStorage:', error);
       
-      // If the error is due to quota exceeded, we attempt to clear some space
+      // If the error is due to quota exceeded, we submission to clear some space
       if (error instanceof DOMException && 
           (error.name === 'QuotaExceededError' || 
            error.name === 'NS_ERROR_DOM_QUOTA_REACHED')) {

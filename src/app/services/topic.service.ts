@@ -30,7 +30,7 @@ export interface TopicModule {
   isUnlocked: boolean;
   isCompleted: boolean;
   bestScore: number;
-  attemptCount: number;
+  submissionCount: number;
 }
 
 /**
@@ -235,7 +235,7 @@ export class TopicService {
       isUnlocked: module.level === 1, // Only level 1 is unlocked
       isCompleted: false,
       bestScore: 0,
-      attemptCount: 0
+      submissionCount: 0
     }));
     
     // Update modules in the database (batch update)

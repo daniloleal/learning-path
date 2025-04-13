@@ -5,11 +5,12 @@ import { CommonModule } from '@angular/common';
 import { Location } from '@angular/common';
 import { QuizService } from '../../services/quiz.service';
 import { Question } from '../../models/questions.interface';
-import { QuizAttempt } from '../../models/quiz-attempt.interface';
+import { QuizSubmission } from '../../models/quiz-submission.interface';
 import { finalize, catchError, switchMap, map, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { AnswerRecord } from '../../models/answer.interface';
 import { TopicService } from '../../services/topic.service';
+
 
 @Component({
   selector: 'app-quiz',
@@ -353,8 +354,8 @@ export class QuizComponent implements OnInit, OnDestroy {
       isCorrect: this.selectedAnswers[i] === q.answer
     }));
     
-    // Create the attempt object according to the QuizAttempt interface requirements
-    const attempt: Omit<QuizAttempt, 'userId' | 'id' | 'timestamp'> = {
+    // Create the submission object according to the QuizSubmission interface requirements
+    const submission: Omit<QuizSubmission, 'userId' | 'id' | 'timestamp'> = {
       moduleId: this.moduleId, // Use the string moduleId
       score: this.correctCount,
       total: this.questions.length,
@@ -362,15 +363,15 @@ export class QuizComponent implements OnInit, OnDestroy {
       answers: answerRecords
     };
   
-    this.quizService.submitAttempt(attempt)
+    this.quizService.submitSubmission(submission)
       .pipe(
         finalize(() => {
           this.isSaving = false;
         })
       )
       .subscribe({
-        next: (savedAttempt) => {
-          // Navigate to results page with the attempt data
+        next: (savedSubmission) => {
+          // Navigate to results page with the submission data
           this.router.navigate(['/result'], {
             state: {
               score: this.correctCount,
@@ -382,7 +383,7 @@ export class QuizComponent implements OnInit, OnDestroy {
           });
         },
         error: (error) => {
-          console.error('Error saving quiz attempt:', error);
+          console.error('Error saving quiz submission:', error);
           // Still navigate to results even if there's an error
           this.router.navigate(['/result'], {
             state: {

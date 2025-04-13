@@ -15,6 +15,14 @@
       "totalModules": 5,
       "id": "angular-m9eabl5q",
       "createdAt": 1744466514398
+    },
+    {
+      "userId": 1,
+      "name": "React",
+      "completedModules": 0,
+      "totalModules": 5,
+      "id": "react-m9ec63c9",
+      "createdAt": 1744469617257
     }
   ],
   "modules": [
@@ -26,7 +34,7 @@
       "isUnlocked": true,
       "isCompleted": false,
       "bestScore": 0,
-      "attemptCount": 0
+      "submissionCount": 0
     },
     {
       "id": "angular-level-2-m9eabl6t",
@@ -36,7 +44,7 @@
       "isUnlocked": false,
       "isCompleted": false,
       "bestScore": 0,
-      "attemptCount": 0
+      "submissionCount": 0
     },
     {
       "id": "angular-level-3-m9eabl6t",
@@ -46,7 +54,7 @@
       "isUnlocked": false,
       "isCompleted": false,
       "bestScore": 0,
-      "attemptCount": 0
+      "submissionCount": 0
     },
     {
       "id": "angular-level-4-m9eabl6t",
@@ -56,7 +64,7 @@
       "isUnlocked": false,
       "isCompleted": false,
       "bestScore": 0,
-      "attemptCount": 0
+      "submissionCount": 0
     },
     {
       "id": "angular-level-5-m9eabl6t",
@@ -66,7 +74,57 @@
       "isUnlocked": false,
       "isCompleted": false,
       "bestScore": 0,
-      "attemptCount": 0
+      "submissionCount": 0
+    },
+    {
+      "id": "react-level-1-m9ec63cn",
+      "level": 1,
+      "topicId": "react-m9ec63c9",
+      "title": "React - Level 1",
+      "isUnlocked": true,
+      "isCompleted": false,
+      "bestScore": 0,
+      "submissionCount": 0
+    },
+    {
+      "id": "react-level-2-m9ec63cn",
+      "level": 2,
+      "topicId": "react-m9ec63c9",
+      "title": "React - Level 2",
+      "isUnlocked": false,
+      "isCompleted": false,
+      "bestScore": 0,
+      "submissionCount": 0
+    },
+    {
+      "id": "react-level-3-m9ec63cn",
+      "level": 3,
+      "topicId": "react-m9ec63c9",
+      "title": "React - Level 3",
+      "isUnlocked": false,
+      "isCompleted": false,
+      "bestScore": 0,
+      "submissionCount": 0
+    },
+    {
+      "id": "react-level-4-m9ec63cn",
+      "level": 4,
+      "topicId": "react-m9ec63c9",
+      "title": "React - Level 4",
+      "isUnlocked": false,
+      "isCompleted": false,
+      "bestScore": 0,
+      "submissionCount": 0
+    },
+    {
+      "id": "react-level-5-m9ec63cn",
+      "level": 5,
+      "topicId": "react-m9ec63c9",
+      "title": "React - Level 5",
+      "isUnlocked": false,
+      "isCompleted": false,
+      "bestScore": 0,
+      "submissionCount": 0
     }
   ],
   "questions": [
@@ -444,7 +502,670 @@
       "moduleId": "angular-level-5-m9eabl6t",
       "level": 5,
       "topicId": "angular-m9eabl5q"
+    },
+    {
+      "question": "[Level 1] What is an important concept in React related to hooks?",
+      "options": [
+        "The advanced principle",
+        "The modern methodology",
+        "The essential framework",
+        "The core pattern"
+      ],
+      "answer": 0,
+      "explanation": "[Level 1] In React, the hooks is particularly important because it forms the foundation for understanding more complex concepts. The correct answer demonstrates proper knowledge of React fundamentals.",
+      "id": "q-react-l1-q1-m9ec6461",
+      "moduleId": "react-level-1-m9ec63cn",
+      "level": 1,
+      "topicId": "react-m9ec63c9"
+    },
+    {
+      "question": "[Level 1] What is an important concept in React related to context?",
+      "options": [
+        "The declarative principle",
+        "The functional methodology",
+        "The declarative framework",
+        "The declarative pattern"
+      ],
+      "answer": 1,
+      "explanation": "[Level 1] In React, the context is particularly important because it forms the foundation for understanding more complex concepts. The correct answer demonstrates proper knowledge of React fundamentals.",
+      "id": "q-react-l1-q2-m9ec6461",
+      "moduleId": "react-level-1-m9ec63cn",
+      "level": 1,
+      "topicId": "react-m9ec63c9"
+    },
+    {
+      "question": "[Level 1] What is an important concept in React related to redux?",
+      "options": [
+        "The declarative principle",
+        "The advanced methodology",
+        "The imperative framework",
+        "The behavioral pattern"
+      ],
+      "answer": 2,
+      "explanation": "[Level 1] In React, the redux is particularly important because it forms the foundation for understanding more complex concepts. The correct answer demonstrates proper knowledge of React fundamentals.",
+      "id": "q-react-l1-q3-m9ec6461",
+      "moduleId": "react-level-1-m9ec63cn",
+      "level": 1,
+      "topicId": "react-m9ec63c9"
+    },
+    {
+      "question": "[Level 1] What is an important concept in React related to props?",
+      "options": [
+        "The advanced principle",
+        "The modern methodology",
+        "The essential framework",
+        "The imperative pattern"
+      ],
+      "answer": 3,
+      "explanation": "[Level 1] In React, the props is particularly important because it forms the foundation for understanding more complex concepts. The correct answer demonstrates proper knowledge of React fundamentals.",
+      "id": "q-react-l1-q4-m9ec6461",
+      "moduleId": "react-level-1-m9ec63cn",
+      "level": 1,
+      "topicId": "react-m9ec63c9"
+    },
+    {
+      "question": "[Level 1] What is an important concept in React related to state?",
+      "options": [
+        "The advanced principle",
+        "The imperative methodology",
+        "The functional framework",
+        "The imperative pattern"
+      ],
+      "answer": 0,
+      "explanation": "[Level 1] In React, the state is particularly important because it forms the foundation for understanding more complex concepts. The correct answer demonstrates proper knowledge of React fundamentals.",
+      "id": "q-react-l1-q5-m9ec6461",
+      "moduleId": "react-level-1-m9ec63cn",
+      "level": 1,
+      "topicId": "react-m9ec63c9"
+    },
+    {
+      "question": "[Level 2] What is an important concept in React related to hooks?",
+      "options": [
+        "The advanced principle",
+        "The modern methodology",
+        "The essential framework",
+        "The core pattern"
+      ],
+      "answer": 0,
+      "explanation": "[Level 2] In React, the hooks is particularly important because it forms the foundation for understanding more complex concepts. The correct answer demonstrates proper knowledge of React fundamentals.",
+      "id": "q-react-l2-q1-m9ec6461",
+      "moduleId": "react-level-2-m9ec63cn",
+      "level": 2,
+      "topicId": "react-m9ec63c9"
+    },
+    {
+      "question": "[Level 2] What is an important concept in React related to context?",
+      "options": [
+        "The declarative principle",
+        "The functional methodology",
+        "The declarative framework",
+        "The declarative pattern"
+      ],
+      "answer": 1,
+      "explanation": "[Level 2] In React, the context is particularly important because it forms the foundation for understanding more complex concepts. The correct answer demonstrates proper knowledge of React fundamentals.",
+      "id": "q-react-l2-q2-m9ec6461",
+      "moduleId": "react-level-2-m9ec63cn",
+      "level": 2,
+      "topicId": "react-m9ec63c9"
+    },
+    {
+      "question": "[Level 2] What is an important concept in React related to redux?",
+      "options": [
+        "The declarative principle",
+        "The advanced methodology",
+        "The imperative framework",
+        "The behavioral pattern"
+      ],
+      "answer": 2,
+      "explanation": "[Level 2] In React, the redux is particularly important because it forms the foundation for understanding more complex concepts. The correct answer demonstrates proper knowledge of React fundamentals.",
+      "id": "q-react-l2-q3-m9ec6461",
+      "moduleId": "react-level-2-m9ec63cn",
+      "level": 2,
+      "topicId": "react-m9ec63c9"
+    },
+    {
+      "question": "[Level 2] What is an important concept in React related to props?",
+      "options": [
+        "The advanced principle",
+        "The modern methodology",
+        "The essential framework",
+        "The imperative pattern"
+      ],
+      "answer": 3,
+      "explanation": "[Level 2] In React, the props is particularly important because it forms the foundation for understanding more complex concepts. The correct answer demonstrates proper knowledge of React fundamentals.",
+      "id": "q-react-l2-q4-m9ec6461",
+      "moduleId": "react-level-2-m9ec63cn",
+      "level": 2,
+      "topicId": "react-m9ec63c9"
+    },
+    {
+      "question": "[Level 2] What is an important concept in React related to state?",
+      "options": [
+        "The advanced principle",
+        "The imperative methodology",
+        "The functional framework",
+        "The imperative pattern"
+      ],
+      "answer": 0,
+      "explanation": "[Level 2] In React, the state is particularly important because it forms the foundation for understanding more complex concepts. The correct answer demonstrates proper knowledge of React fundamentals.",
+      "id": "q-react-l2-q5-m9ec6461",
+      "moduleId": "react-level-2-m9ec63cn",
+      "level": 2,
+      "topicId": "react-m9ec63c9"
+    },
+    {
+      "question": "[Level 3] What is an important concept in React related to hooks?",
+      "options": [
+        "The advanced principle",
+        "The modern methodology",
+        "The essential framework",
+        "The core pattern"
+      ],
+      "answer": 0,
+      "explanation": "[Level 3] In React, the hooks is particularly important because it forms the foundation for understanding more complex concepts. The correct answer demonstrates proper knowledge of React fundamentals.",
+      "id": "q-react-l3-q1-m9ec6461",
+      "moduleId": "react-level-3-m9ec63cn",
+      "level": 3,
+      "topicId": "react-m9ec63c9"
+    },
+    {
+      "question": "[Level 3] What is an important concept in React related to context?",
+      "options": [
+        "The declarative principle",
+        "The functional methodology",
+        "The declarative framework",
+        "The declarative pattern"
+      ],
+      "answer": 1,
+      "explanation": "[Level 3] In React, the context is particularly important because it forms the foundation for understanding more complex concepts. The correct answer demonstrates proper knowledge of React fundamentals.",
+      "id": "q-react-l3-q2-m9ec6461",
+      "moduleId": "react-level-3-m9ec63cn",
+      "level": 3,
+      "topicId": "react-m9ec63c9"
+    },
+    {
+      "question": "[Level 3] What is an important concept in React related to redux?",
+      "options": [
+        "The declarative principle",
+        "The advanced methodology",
+        "The imperative framework",
+        "The behavioral pattern"
+      ],
+      "answer": 2,
+      "explanation": "[Level 3] In React, the redux is particularly important because it forms the foundation for understanding more complex concepts. The correct answer demonstrates proper knowledge of React fundamentals.",
+      "id": "q-react-l3-q3-m9ec6461",
+      "moduleId": "react-level-3-m9ec63cn",
+      "level": 3,
+      "topicId": "react-m9ec63c9"
+    },
+    {
+      "question": "[Level 3] What is an important concept in React related to props?",
+      "options": [
+        "The advanced principle",
+        "The modern methodology",
+        "The essential framework",
+        "The imperative pattern"
+      ],
+      "answer": 3,
+      "explanation": "[Level 3] In React, the props is particularly important because it forms the foundation for understanding more complex concepts. The correct answer demonstrates proper knowledge of React fundamentals.",
+      "id": "q-react-l3-q4-m9ec6461",
+      "moduleId": "react-level-3-m9ec63cn",
+      "level": 3,
+      "topicId": "react-m9ec63c9"
+    },
+    {
+      "question": "[Level 3] What is an important concept in React related to state?",
+      "options": [
+        "The advanced principle",
+        "The imperative methodology",
+        "The functional framework",
+        "The imperative pattern"
+      ],
+      "answer": 0,
+      "explanation": "[Level 3] In React, the state is particularly important because it forms the foundation for understanding more complex concepts. The correct answer demonstrates proper knowledge of React fundamentals.",
+      "id": "q-react-l3-q5-m9ec6461",
+      "moduleId": "react-level-3-m9ec63cn",
+      "level": 3,
+      "topicId": "react-m9ec63c9"
+    },
+    {
+      "question": "[Level 4] What is an important concept in React related to hooks?",
+      "options": [
+        "The advanced principle",
+        "The modern methodology",
+        "The essential framework",
+        "The core pattern"
+      ],
+      "answer": 0,
+      "explanation": "[Level 4] In React, the hooks is particularly important because it forms the foundation for understanding more complex concepts. The correct answer demonstrates proper knowledge of React fundamentals.",
+      "id": "q-react-l4-q1-m9ec6461",
+      "moduleId": "react-level-4-m9ec63cn",
+      "level": 4,
+      "topicId": "react-m9ec63c9"
+    },
+    {
+      "question": "[Level 4] What is an important concept in React related to context?",
+      "options": [
+        "The declarative principle",
+        "The functional methodology",
+        "The declarative framework",
+        "The declarative pattern"
+      ],
+      "answer": 1,
+      "explanation": "[Level 4] In React, the context is particularly important because it forms the foundation for understanding more complex concepts. The correct answer demonstrates proper knowledge of React fundamentals.",
+      "id": "q-react-l4-q2-m9ec6461",
+      "moduleId": "react-level-4-m9ec63cn",
+      "level": 4,
+      "topicId": "react-m9ec63c9"
+    },
+    {
+      "question": "[Level 4] What is an important concept in React related to redux?",
+      "options": [
+        "The declarative principle",
+        "The advanced methodology",
+        "The imperative framework",
+        "The behavioral pattern"
+      ],
+      "answer": 2,
+      "explanation": "[Level 4] In React, the redux is particularly important because it forms the foundation for understanding more complex concepts. The correct answer demonstrates proper knowledge of React fundamentals.",
+      "id": "q-react-l4-q3-m9ec6461",
+      "moduleId": "react-level-4-m9ec63cn",
+      "level": 4,
+      "topicId": "react-m9ec63c9"
+    },
+    {
+      "question": "[Level 4] What is an important concept in React related to props?",
+      "options": [
+        "The advanced principle",
+        "The modern methodology",
+        "The essential framework",
+        "The imperative pattern"
+      ],
+      "answer": 3,
+      "explanation": "[Level 4] In React, the props is particularly important because it forms the foundation for understanding more complex concepts. The correct answer demonstrates proper knowledge of React fundamentals.",
+      "id": "q-react-l4-q4-m9ec6461",
+      "moduleId": "react-level-4-m9ec63cn",
+      "level": 4,
+      "topicId": "react-m9ec63c9"
+    },
+    {
+      "question": "[Level 4] What is an important concept in React related to state?",
+      "options": [
+        "The advanced principle",
+        "The imperative methodology",
+        "The functional framework",
+        "The imperative pattern"
+      ],
+      "answer": 0,
+      "explanation": "[Level 4] In React, the state is particularly important because it forms the foundation for understanding more complex concepts. The correct answer demonstrates proper knowledge of React fundamentals.",
+      "id": "q-react-l4-q5-m9ec6461",
+      "moduleId": "react-level-4-m9ec63cn",
+      "level": 4,
+      "topicId": "react-m9ec63c9"
+    },
+    {
+      "question": "[Level 5] What is an important concept in React related to hooks?",
+      "options": [
+        "The advanced principle",
+        "The modern methodology",
+        "The essential framework",
+        "The core pattern"
+      ],
+      "answer": 0,
+      "explanation": "[Level 5] In React, the hooks is particularly important because it forms the foundation for understanding more complex concepts. The correct answer demonstrates proper knowledge of React fundamentals.",
+      "id": "q-react-l5-q1-m9ec6461",
+      "moduleId": "react-level-5-m9ec63cn",
+      "level": 5,
+      "topicId": "react-m9ec63c9"
+    },
+    {
+      "question": "[Level 5] What is an important concept in React related to context?",
+      "options": [
+        "The declarative principle",
+        "The functional methodology",
+        "The declarative framework",
+        "The declarative pattern"
+      ],
+      "answer": 1,
+      "explanation": "[Level 5] In React, the context is particularly important because it forms the foundation for understanding more complex concepts. The correct answer demonstrates proper knowledge of React fundamentals.",
+      "id": "q-react-l5-q2-m9ec6461",
+      "moduleId": "react-level-5-m9ec63cn",
+      "level": 5,
+      "topicId": "react-m9ec63c9"
+    },
+    {
+      "question": "[Level 5] What is an important concept in React related to redux?",
+      "options": [
+        "The declarative principle",
+        "The advanced methodology",
+        "The imperative framework",
+        "The behavioral pattern"
+      ],
+      "answer": 2,
+      "explanation": "[Level 5] In React, the redux is particularly important because it forms the foundation for understanding more complex concepts. The correct answer demonstrates proper knowledge of React fundamentals.",
+      "id": "q-react-l5-q3-m9ec6461",
+      "moduleId": "react-level-5-m9ec63cn",
+      "level": 5,
+      "topicId": "react-m9ec63c9"
+    },
+    {
+      "question": "[Level 5] What is an important concept in React related to props?",
+      "options": [
+        "The advanced principle",
+        "The modern methodology",
+        "The essential framework",
+        "The imperative pattern"
+      ],
+      "answer": 3,
+      "explanation": "[Level 5] In React, the props is particularly important because it forms the foundation for understanding more complex concepts. The correct answer demonstrates proper knowledge of React fundamentals.",
+      "id": "q-react-l5-q4-m9ec6461",
+      "moduleId": "react-level-5-m9ec63cn",
+      "level": 5,
+      "topicId": "react-m9ec63c9"
+    },
+    {
+      "question": "[Level 5] What is an important concept in React related to state?",
+      "options": [
+        "The advanced principle",
+        "The imperative methodology",
+        "The functional framework",
+        "The imperative pattern"
+      ],
+      "answer": 0,
+      "explanation": "[Level 5] In React, the state is particularly important because it forms the foundation for understanding more complex concepts. The correct answer demonstrates proper knowledge of React fundamentals.",
+      "id": "q-react-l5-q5-m9ec6461",
+      "moduleId": "react-level-5-m9ec63cn",
+      "level": 5,
+      "topicId": "react-m9ec63c9"
     }
   ],
-  "attempts": []
+  "submissions": [
+    {
+      "moduleId": "angular-level-1-m9eabl6t",
+      "score": 2,
+      "total": 5,
+      "duration": 30,
+      "answers": [
+        {
+          "question": "[Level 1] What is an important concept in Angular related to services?",
+          "selectedOption": 0,
+          "correctOption": 0,
+          "isCorrect": true
+        },
+        {
+          "question": "[Level 1] What is an important concept in Angular related to modules?",
+          "selectedOption": 0,
+          "correctOption": 1,
+          "isCorrect": false
+        },
+        {
+          "question": "[Level 1] What is an important concept in Angular related to directives?",
+          "selectedOption": 2,
+          "correctOption": 2,
+          "isCorrect": true
+        },
+        {
+          "question": "[Level 1] What is an important concept in Angular related to pipes?",
+          "selectedOption": 0,
+          "correctOption": 3,
+          "isCorrect": false
+        },
+        {
+          "question": "[Level 1] What is an important concept in Angular related to routing?",
+          "selectedOption": 2,
+          "correctOption": 0,
+          "isCorrect": false
+        }
+      ],
+      "userId": 1,
+      "timestamp": 1744469445519,
+      "id": "2df9ef99-876f-4daa-b70d-4d7752f79ad3"
+    },
+    {
+      "moduleId": "angular-level-1-m9eabl6t",
+      "score": 3,
+      "total": 5,
+      "duration": 11,
+      "answers": [
+        {
+          "question": "[Level 1] What is an important concept in Angular related to services?",
+          "selectedOption": 0,
+          "correctOption": 0,
+          "isCorrect": true
+        },
+        {
+          "question": "[Level 1] What is an important concept in Angular related to modules?",
+          "selectedOption": 2,
+          "correctOption": 1,
+          "isCorrect": false
+        },
+        {
+          "question": "[Level 1] What is an important concept in Angular related to directives?",
+          "selectedOption": 0,
+          "correctOption": 2,
+          "isCorrect": false
+        },
+        {
+          "question": "[Level 1] What is an important concept in Angular related to pipes?",
+          "selectedOption": 3,
+          "correctOption": 3,
+          "isCorrect": true
+        },
+        {
+          "question": "[Level 1] What is an important concept in Angular related to routing?",
+          "selectedOption": 0,
+          "correctOption": 0,
+          "isCorrect": true
+        }
+      ],
+      "userId": 1,
+      "timestamp": 1744469479251,
+      "id": "22ed7a9a-e6de-4c0d-98b8-56cb10753622"
+    },
+    {
+      "moduleId": "angular-level-1-m9eabl6t",
+      "score": 4,
+      "total": 5,
+      "duration": 11,
+      "answers": [
+        {
+          "question": "[Level 1] What is an important concept in Angular related to services?",
+          "selectedOption": 0,
+          "correctOption": 0,
+          "isCorrect": true
+        },
+        {
+          "question": "[Level 1] What is an important concept in Angular related to modules?",
+          "selectedOption": 0,
+          "correctOption": 1,
+          "isCorrect": false
+        },
+        {
+          "question": "[Level 1] What is an important concept in Angular related to directives?",
+          "selectedOption": 2,
+          "correctOption": 2,
+          "isCorrect": true
+        },
+        {
+          "question": "[Level 1] What is an important concept in Angular related to pipes?",
+          "selectedOption": 3,
+          "correctOption": 3,
+          "isCorrect": true
+        },
+        {
+          "question": "[Level 1] What is an important concept in Angular related to routing?",
+          "selectedOption": 0,
+          "correctOption": 0,
+          "isCorrect": true
+        }
+      ],
+      "userId": 1,
+      "timestamp": 1744469557919,
+      "id": "a1c8149d-ae37-4ca3-8e22-5d6af292cbdf"
+    },
+    {
+      "moduleId": "angular-level-1-m9eabl6t",
+      "score": 5,
+      "total": 5,
+      "duration": 12,
+      "answers": [
+        {
+          "question": "[Level 1] What is an important concept in Angular related to services?",
+          "selectedOption": 0,
+          "correctOption": 0,
+          "isCorrect": true
+        },
+        {
+          "question": "[Level 1] What is an important concept in Angular related to modules?",
+          "selectedOption": 1,
+          "correctOption": 1,
+          "isCorrect": true
+        },
+        {
+          "question": "[Level 1] What is an important concept in Angular related to directives?",
+          "selectedOption": 2,
+          "correctOption": 2,
+          "isCorrect": true
+        },
+        {
+          "question": "[Level 1] What is an important concept in Angular related to pipes?",
+          "selectedOption": 3,
+          "correctOption": 3,
+          "isCorrect": true
+        },
+        {
+          "question": "[Level 1] What is an important concept in Angular related to routing?",
+          "selectedOption": 0,
+          "correctOption": 0,
+          "isCorrect": true
+        }
+      ],
+      "userId": 1,
+      "timestamp": 1744469583419,
+      "id": "055d9e3e-dbad-4505-8ace-814c49c9c54b"
+    },
+    {
+      "moduleId": "react-level-1-m9ec63cn",
+      "score": 5,
+      "total": 5,
+      "duration": 24,
+      "answers": [
+        {
+          "question": "[Level 1] What is an important concept in React related to hooks?",
+          "selectedOption": 0,
+          "correctOption": 0,
+          "isCorrect": true
+        },
+        {
+          "question": "[Level 1] What is an important concept in React related to context?",
+          "selectedOption": 1,
+          "correctOption": 1,
+          "isCorrect": true
+        },
+        {
+          "question": "[Level 1] What is an important concept in React related to redux?",
+          "selectedOption": 2,
+          "correctOption": 2,
+          "isCorrect": true
+        },
+        {
+          "question": "[Level 1] What is an important concept in React related to props?",
+          "selectedOption": 3,
+          "correctOption": 3,
+          "isCorrect": true
+        },
+        {
+          "question": "[Level 1] What is an important concept in React related to state?",
+          "selectedOption": 0,
+          "correctOption": 0,
+          "isCorrect": true
+        }
+      ],
+      "userId": 1,
+      "timestamp": 1744469652086,
+      "id": "1d25a57a-7afb-4df7-88f2-08e54db1121d"
+    },
+    {
+      "moduleId": "angular-level-1-m9eabl6t",
+      "score": 2,
+      "total": 5,
+      "duration": 11,
+      "answers": [
+        {
+          "question": "[Level 1] What is an important concept in Angular related to services?",
+          "selectedOption": 0,
+          "correctOption": 0,
+          "isCorrect": true
+        },
+        {
+          "question": "[Level 1] What is an important concept in Angular related to modules?",
+          "selectedOption": 2,
+          "correctOption": 1,
+          "isCorrect": false
+        },
+        {
+          "question": "[Level 1] What is an important concept in Angular related to directives?",
+          "selectedOption": 0,
+          "correctOption": 2,
+          "isCorrect": false
+        },
+        {
+          "question": "[Level 1] What is an important concept in Angular related to pipes?",
+          "selectedOption": 3,
+          "correctOption": 3,
+          "isCorrect": true
+        },
+        {
+          "question": "[Level 1] What is an important concept in Angular related to routing?",
+          "selectedOption": 3,
+          "correctOption": 0,
+          "isCorrect": false
+        }
+      ],
+      "userId": 1,
+      "timestamp": 1744580887656,
+      "id": "1d4dc008-3ee6-453a-b2c9-d0c664326524"
+    },
+    {
+      "moduleId": "angular-level-1-m9eabl6t",
+      "score": 3,
+      "total": 5,
+      "duration": 15,
+      "answers": [
+        {
+          "question": "[Level 1] What is an important concept in Angular related to services?",
+          "selectedOption": 0,
+          "correctOption": 0,
+          "isCorrect": true
+        },
+        {
+          "question": "[Level 1] What is an important concept in Angular related to modules?",
+          "selectedOption": 0,
+          "correctOption": 1,
+          "isCorrect": false
+        },
+        {
+          "question": "[Level 1] What is an important concept in Angular related to directives?",
+          "selectedOption": 2,
+          "correctOption": 2,
+          "isCorrect": true
+        },
+        {
+          "question": "[Level 1] What is an important concept in Angular related to pipes?",
+          "selectedOption": 0,
+          "correctOption": 3,
+          "isCorrect": false
+        },
+        {
+          "question": "[Level 1] What is an important concept in Angular related to routing?",
+          "selectedOption": 0,
+          "correctOption": 0,
+          "isCorrect": true
+        }
+      ],
+      "userId": 1,
+      "timestamp": 1744580911618,
+      "id": "37fca0a7-44b0-4e6c-ae55-44546de41a36"
+    }
+  ]
 }

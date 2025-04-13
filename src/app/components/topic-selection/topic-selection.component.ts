@@ -263,7 +263,7 @@ export class TopicSelectionComponent implements OnInit, OnDestroy {
               isUnlocked: moduleData.moduleId === 1,
               isCompleted: false,
               bestScore: 0,
-              attemptCount: 0
+              submissionCount: 0
             };
             
             // Add a deliberate delay between module creations (100ms * index)

@@ -20,13 +20,13 @@ import { RouterModule, RouterOutlet } from '@angular/router';
     </a>
     <div class="flex items-center gap-4">
       <a 
-        routerLink="/attempts"
+        routerLink="/submissions"
         class="flex items-center gap-2 px-3 py-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
       >
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
         </svg>
-        My Attempts
+        My Submissions
       </a>
       <button 
         (click)="toggleDarkMode()" 

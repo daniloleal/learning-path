@@ -4,8 +4,8 @@ module.exports = (req, res, next) => {
     case '/questions':
       getQuestions(req, res, next);
       break;
-    case '/attempts':
-      getAttempts(req, res, next);
+    case '/submissionsß':
+      getSubmissions(req, res, next);
       break;
     case '/error':
       respondError(req, res);
@@ -21,10 +21,10 @@ module.exports = (req, res, next) => {
     }, 20);
   }
 
-  function getAttempts(req, res, next) {
-    const attempts = db.attempts;
+  function getSubmissions(req, res, next) {
+    const submissions = db.submissions;
     setTimeout(() => {
-      res.json(input ? attempts : []);
+      res.json(input ? submissions : []);
     }, 20);
   }
 

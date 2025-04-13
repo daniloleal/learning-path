@@ -21,14 +21,14 @@
   "/api/topic-module-questions/:topicId/:moduleId": "/questions?topicId=:topicId&moduleId=:moduleId",
   "/api/questions?topicId=:topicId&moduleId=:moduleId": "/questions?topicId=:topicId&moduleId=:moduleId",
   
-  "/api/attempts": "/attempts",
-  "/api/attempts/:id": "/attempts/:id",
-  "/api/user-attempts/:userId": "/attempts?userId=:userId",
-  "/api/attempts?userId=:userId": "/attempts?userId=:userId",
-  "/api/module-attempts/:moduleId": "/attempts?moduleId=:moduleId",
-  "/api/attempts?moduleId=:moduleId": "/attempts?moduleId=:moduleId",
-  "/api/user-module-attempts/:userId/:moduleId": "/attempts?userId=:userId&moduleId=:moduleId",
-  "/api/attempts?userId=:userId&moduleId=:moduleId": "/attempts?userId=:userId&moduleId=:moduleId",
-  "/api/topic-attempts/:topicId": "/attempts?topicId=:topicId",
-  "/api/attempts?topicId=:topicId": "/attempts?topicId=:topicId"
+  "/api/submissions": "/submissions",
+  "/api/submissions/:id": "/submissions/:id",
+  "/api/user-submissions/:userId": "/submissions?userId=:userId",
+  "/api/submissions?userId=:userId": "/submissions?userId=:userId",
+  "/api/module-submissions/:moduleId": "/submissions?moduleId=:moduleId",
+  "/api/submissions?moduleId=:moduleId": "/submissions?moduleId=:moduleId",
+  "/api/user-module-submissions/:userId/:moduleId": "/submissions?userId=:userId&moduleId=:moduleId",
+  "/api/submissions?userId=:userId&moduleId=:moduleId": "/submissions?userId=:userId&moduleId=:moduleId",
+  "/api/topic-submissions/:topicId": "/submissions?topicId=:topicId",
+  "/api/submissions?topicId=:topicId": "/submissions?topicId=:topicId"
 }

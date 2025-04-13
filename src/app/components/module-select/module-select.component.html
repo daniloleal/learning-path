@@ -48,7 +48,7 @@
         </div>
       </div>
 
-      <!-- Reset button and attempts link -->
+      <!-- Reset button and submissions link -->
       <div class="flex justify-center gap-4">
         <button
           class="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
@@ -73,7 +73,7 @@
           Reset Progress
         </button>
         <a
-          routerLink="/attempts"
+          routerLink="/submissions"
           class="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
         >
           <svg
@@ -91,7 +91,7 @@
               d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
             ></path>
           </svg>
-          View Attempts
+          View Submissions
         </a>
       </div>
     </div>
@@ -140,20 +140,20 @@
                     Best: {{ module.bestScore }}%
                   </span>
                   <span *ngIf="module.bestScore === 0 && module.isUnlocked">
-                    Not attempted
+                    Not submissioned
                   </span>
                   <span *ngIf="!module.isUnlocked">
                     Locked
                   </span>
                 </div>
 
-                <!-- Attempts count -->
+                <!-- Submissions count -->
                 <div
-                  *ngIf="module.attemptCount > 0"
+                  *ngIf="module.submissionCount > 0"
                   class="text-xs text-gray-500 mt-1"
                 >
-                  {{ module.attemptCount }} 
-                  attempt{{ module.attemptCount > 1 ? 's' : '' }}
+                  {{ module.submissionCount }} 
+                  submission{{ module.submissionCount > 1 ? 's' : '' }}
                 </div>
 
                 <!-- Level status icons -->

@@ -1,4 +1,4 @@
-export interface QuizAttempt {
+export interface QuizSubmission {
   id?: string;
   userId: number;
   moduleId: string; // Changed from number to string to match DB structure

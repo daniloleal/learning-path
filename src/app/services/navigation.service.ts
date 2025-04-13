@@ -88,9 +88,9 @@ export class NavigationService {
   }
   
   /**
-   * Navigate to attempts history
+   * Navigate to submissions history
    */
-  goToAttempts(): void {
-    this.router.navigate(['/attempts']);
+  goToSubmissions(): void {
+    this.router.navigate(['/submissions']);
   }
 }
