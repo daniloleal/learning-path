@@ -2,8 +2,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { StorageService } from './storage.service';
-import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
-import { catchError, map, tap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of, throwError, forkJoin } from 'rxjs';
+import { catchError, map, tap, switchMap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { ErrorHandlingService } from './error-handling.service';
 
@@ -17,6 +17,7 @@ export interface Topic {
   createdAt: number;
   completedModules: number;
   totalModules: number;
+  isArchived?: boolean;  // Added archived flag
 }
 
 /**
@@ -174,7 +175,8 @@ export class TopicService {
     const newTopic = {
       ...topic,
       id: this.generateId(topic.name),
-      createdAt: Date.now()
+      createdAt: Date.now(),
+      isArchived: false
     };
 
     return this.http.post<Topic>(`${this.apiUrl}/topics`, newTopic)
@@ -253,6 +255,151 @@ export class TopicService {
     this.modules[topicId] = resetModules;
     
     return of(true);
+  }
+
+  /**
+   * Archive a topic (mark as archived without deletion)
+   * @param topicId The ID of the topic to archive
+   */
+  archiveTopic(topicId: string): Observable<Topic> {
+    const topic = this.topics.find(t => t.id === topicId);
+    
+    if (!topic) {
+      return throwError(() => new Error(`Topic with ID ${topicId} not found`));
+    }
+    
+    const updatedTopic = {
+      ...topic,
+      isArchived: true
+    };
+    
+    return this.http.put<Topic>(`${this.apiUrl}/topics/${topicId}`, updatedTopic)
+      .pipe(
+        tap(savedTopic => {
+          const index = this.topics.findIndex(t => t.id === topicId);
+          if (index !== -1) {
+            this.topics[index] = savedTopic;
+            this.topicsSubject.next([...this.topics]);
+          }
+        }),
+        catchError(error => {
+          return this.errorHandling.handleError(error, 'Error archiving topic');
+        })
+      );
+  }
+
+  /**
+   * Unarchive a topic (remove archived flag)
+   * @param topicId The ID of the topic to unarchive
+   */
+  unarchiveTopic(topicId: string): Observable<Topic> {
+    const topic = this.topics.find(t => t.id === topicId);
+    
+    if (!topic) {
+      return throwError(() => new Error(`Topic with ID ${topicId} not found`));
+    }
+    
+    const updatedTopic = {
+      ...topic,
+      isArchived: false
+    };
+    
+    return this.http.put<Topic>(`${this.apiUrl}/topics/${topicId}`, updatedTopic)
+      .pipe(
+        tap(savedTopic => {
+          const index = this.topics.findIndex(t => t.id === topicId);
+          if (index !== -1) {
+            this.topics[index] = savedTopic;
+            this.topicsSubject.next([...this.topics]);
+          }
+        }),
+        catchError(error => {
+          return this.errorHandling.handleError(error, 'Error unarchiving topic');
+        })
+      );
+  }
+
+  /**
+   * Delete a topic and all related data
+   * @param topicId The ID of the topic to delete
+   */
+  deleteTopic(topicId: string): Observable<boolean> {
+    // Step 1: Get all modules for this topic to delete them later
+    return this.http.get<any[]>(`${this.apiUrl}/modules?topicId=${topicId}`).pipe(
+      // Step 2: Delete all questions for each module
+      switchMap(modules => {
+        const moduleIds = modules.map(module => module.id);
+        
+        if (moduleIds.length === 0) {
+          // No modules, continue to topic deletion
+          return of(moduleIds);
+        }
+        
+        // Create deletion requests for each module's questions
+        const questionDeletionRequests = moduleIds.map(moduleId => 
+          this.http.delete(`${this.apiUrl}/questions?moduleId=${moduleId}`)
+        );
+        
+        // Execute all question deletion requests
+        return forkJoin(questionDeletionRequests).pipe(
+          map(() => moduleIds),
+          catchError(error => {
+            console.error('Error deleting module questions:', error);
+            return of(moduleIds); // Continue even if this fails
+          })
+        );
+      }),
+      
+      // Step 3: Delete all modules for this topic
+      switchMap(moduleIds => {
+        if (moduleIds.length === 0) {
+          // No modules, continue to topic deletion
+          return of(true);
+        }
+        
+        // Delete modules
+        return this.http.delete(`${this.apiUrl}/modules?topicId=${topicId}`).pipe(
+          map(() => true),
+          catchError(error => {
+            console.error('Error deleting modules:', error);
+            return of(true); // Continue even if this fails
+          })
+        );
+      }),
+      
+      // Step 4: Delete all submissions related to this topic (requires additional API endpoint)
+      switchMap(() => {
+        // In a real app, we'd use a direct API endpoint for this
+        // Here we go via modules to delete their submissions
+        return this.http.delete(`${this.apiUrl}/submissions?topicId=${topicId}`).pipe(
+          catchError(error => {
+            console.error('Error deleting submissions:', error);
+            return of(true); // Continue even if this fails
+          })
+        );
+      }),
+      
+      // Step 5: Delete the topic itself
+      switchMap(() => {
+        return this.http.delete<void>(`${this.apiUrl}/topics/${topicId}`).pipe(
+          tap(() => {
+            // Remove from local state
+            const index = this.topics.findIndex(t => t.id === topicId);
+            if (index !== -1) {
+              this.topics.splice(index, 1);
+              this.topicsSubject.next([...this.topics]);
+            }
+            
+            // Remove from modules cache
+            delete this.modules[topicId];
+          }),
+          map(() => true),
+          catchError(error => {
+            return this.errorHandling.handleError(error, 'Error deleting topic');
+          })
+        );
+      })
+    );
   }
 
   /**

@@ -9,6 +9,7 @@ import { AIQuizService } from '../../services/ai-quiz.service';
 import { ErrorHandlingService } from '../../services/error-handling.service';
 import { NavigationService } from '../../services/navigation.service';
 import { QuestionService } from '../../services/question.service';
+import { QuizService } from '../../services/quiz.service';
 import { Observable, Subscription, forkJoin, interval, of, timer, concat } from 'rxjs';
 import { catchError, finalize, map, switchMap, takeWhile, tap, concatMap, delay } from 'rxjs/operators';
 import { AILoadingComponent } from '../shared/ai-loading.component';
@@ -29,6 +30,9 @@ import { environment } from '../../../environments/environment';
 })
 export class TopicSelectionComponent implements OnInit, OnDestroy {
   topics: Topic[] = [];
+  archivedTopics: Topic[] = [];
+  activeTopics: Topic[] = [];
+  showArchived = false;
   newTopicInput = '';
   isLoading = false;
   showAiLoading = false;
@@ -37,6 +41,13 @@ export class TopicSelectionComponent implements OnInit, OnDestroy {
   showOpenAiError = false;
   errorMessage = '';
   detailedError = '';
+  
+  // Dialog state
+  showConfirmDialog = false;
+  confirmDialogType: 'delete' | 'archive' = 'delete';
+  confirmDialogTitle = '';
+  confirmDialogMessage = '';
+  selectedTopicId: string | null = null;
   
   private readonly apiUrl = environment.apiUrl;
   private progressSubscription?: Subscription; 
@@ -62,6 +73,7 @@ export class TopicSelectionComponent implements OnInit, OnDestroy {
     private topicService: TopicService,
     private aiQuizService: AIQuizService,
     private questionService: QuestionService, 
+    private quizService: QuizService,
     private errorHandling: ErrorHandlingService,
     private navigationService: NavigationService
   ) {}
@@ -71,6 +83,8 @@ export class TopicSelectionComponent implements OnInit, OnDestroy {
     this.subscription.add(
       this.topicService.getTopics$().subscribe(topics => {
         this.topics = topics;
+        this.activeTopics = topics.filter(topic => !topic.isArchived);
+        this.archivedTopics = topics.filter(topic => topic.isArchived);
       })
     );
   }
@@ -111,7 +125,8 @@ export class TopicSelectionComponent implements OnInit, OnDestroy {
             userId: 1, // Current user ID
             name: this.newTopicInput,
             completedModules: 0,
-            totalModules: 5 // Fixed to 5 modules
+            totalModules: 5, // Fixed to 5 modules
+            isArchived: false
           };
           
           // Step 2: Create the topic in the database
@@ -330,6 +345,109 @@ export class TopicSelectionComponent implements OnInit, OnDestroy {
           }
         }
       });
+  }
+  
+  /**
+   * Show confirmation dialog for delete or archive
+   */
+  confirmAction(topic: Topic, action: 'delete' | 'archive'): void {
+    this.selectedTopicId = topic.id;
+    this.confirmDialogType = action;
+    
+    if (action === 'delete') {
+      this.confirmDialogTitle = `Delete "${topic.name}"?`;
+      this.confirmDialogMessage = 
+        `This will permanently delete this topic and all its related modules, questions, and submission history. This action cannot be undone.`;
+    } else {
+      if (topic.isArchived) {
+        this.confirmDialogTitle = `Unarchive "${topic.name}"?`;
+        this.confirmDialogMessage = 
+          `This will restore the topic to your active topics list.`;
+      } else {
+        this.confirmDialogTitle = `Archive "${topic.name}"?`;
+        this.confirmDialogMessage = 
+          `This will move the topic to the archived topics list. You can unarchive it later if needed.`;
+      }
+    }
+    
+    this.showConfirmDialog = true;
+  }
+  
+  /**
+   * Execute the confirmed action (delete or archive)
+   */
+  /**
+   * Get the appropriate button text for the confirmation dialog
+   */
+  getActionButtonText(): string {
+    if (this.confirmDialogType === 'delete') {
+      return 'Delete';
+    }
+    
+    if (this.selectedTopicId) {
+      const topic = this.topics.find(t => t.id === this.selectedTopicId);
+      return topic?.isArchived ? 'Unarchive' : 'Archive';
+    }
+    
+    return 'Archive';
+  }
+  
+  /**
+   * Execute the confirmed action (delete or archive)
+   */
+  executeConfirmedAction(): void {
+    if (!this.selectedTopicId) {
+      this.showConfirmDialog = false;
+      return;
+    }
+    
+    const topic = this.topics.find(t => t.id === this.selectedTopicId);
+    if (!topic) {
+      this.showConfirmDialog = false;
+      return;
+    }
+    
+    if (this.confirmDialogType === 'delete') {
+      // Delete topic and all related data
+      this.topicService.deleteTopic(this.selectedTopicId)
+        .subscribe({
+          next: () => {
+            this.errorHandling.showSuccess(`Topic "${topic.name}" has been deleted`);
+            this.showConfirmDialog = false;
+          },
+          error: (error) => {
+            console.error('Error deleting topic:', error);
+            this.showConfirmDialog = false;
+          }
+        });
+    } else {
+      // Archive or unarchive
+      const isCurrentlyArchived = !!topic.isArchived;
+      const operation = isCurrentlyArchived
+        ? this.topicService.unarchiveTopic(this.selectedTopicId)
+        : this.topicService.archiveTopic(this.selectedTopicId);
+      
+      operation.subscribe({
+        next: () => {
+          const message = isCurrentlyArchived
+            ? `Topic "${topic.name}" has been unarchived`
+            : `Topic "${topic.name}" has been archived`;
+          this.errorHandling.showSuccess(message);
+          this.showConfirmDialog = false;
+        },
+        error: (error) => {
+          console.error('Error archiving/unarchiving topic:', error);
+          this.showConfirmDialog = false;
+        }
+      });
+    }
+  }
+  
+  /**
+   * Toggle showing archived topics
+   */
+  toggleArchived(): void {
+    this.showArchived = !this.showArchived;
   }
   
   /**

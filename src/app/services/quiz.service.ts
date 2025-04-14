@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, of, throwError } from 'rxjs';
-import { catchError, tap, shareReplay, retry, map } from 'rxjs/operators';
+import { Observable, of, throwError, forkJoin } from 'rxjs';
+import { catchError, tap, shareReplay, retry, map, switchMap } from 'rxjs/operators';
 import { Question } from '../models/questions.interface';
 import { QuizSubmission } from '../models/quiz-submission.interface';
 import { environment } from '../../environments/environment';
@@ -126,6 +126,42 @@ export class QuizService {
       catchError(error => {
         console.error('Error loading user submissions:', error);
         return of([]);
+      })
+    );
+  }
+
+  /**
+   * Delete all submissions for a specific topic
+   * @param topicId The topic ID to delete submissions for
+   * @returns Observable indicating completion
+   */
+  deleteSubmissionsForTopic(topicId: string): Observable<void> {
+    // First, we need to get all modules for this topic
+    return this.http.get<any[]>(`${this.apiUrl}/modules?topicId=${topicId}`).pipe(
+      map(modules => modules.map(module => module.id)),
+      switchMap(moduleIds => {
+        // If there are no modules, just return completed
+        if (!moduleIds || moduleIds.length === 0) {
+          return of(undefined);
+        }
+        
+        // Create deletion requests for each module's submissions
+        const deletionRequests = moduleIds.map(moduleId => 
+          this.http.delete(`${this.apiUrl}/submissions?moduleId=${moduleId}`)
+        );
+        
+        // Execute all deletion requests and wait for them to complete
+        return forkJoin(deletionRequests).pipe(
+          map(() => undefined), // Return void when all are complete
+          catchError(error => {
+            console.error('Error deleting submissions for modules:', error);
+            return of(undefined);
+          })
+        );
+      }),
+      catchError(error => {
+        console.error('Error getting modules for topic:', error);
+        return of(undefined);
       })
     );
   }
